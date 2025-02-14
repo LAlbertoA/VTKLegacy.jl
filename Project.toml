@@ -3,7 +3,13 @@ uuid = "0a04e04c-3d81-46c0-89a4-d6cdbba47ab1"
 authors = ["Luis Alberto Arcos Rojas"]
 version = "0.0.1-DEV"
 
+[deps]
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+LoopVectorization = "bdcacae8-1622-11e9-2a5c-532679323890"
+
 [compat]
+CairoMakie = "0.13.1"
+LoopVectorization = "0.12.171"
 julia = "1.6.7"
 
 [extras]
