@@ -1,7 +1,7 @@
 name = "VTKLegacy"
 uuid = "0a04e04c-3d81-46c0-89a4-d6cdbba47ab1"
 authors = ["Luis Alberto Arcos Rojas"]
-version = "1.0.0-DEV"
+version = "0.0.1-DEV"
 
 [compat]
 julia = "1.6.7"
