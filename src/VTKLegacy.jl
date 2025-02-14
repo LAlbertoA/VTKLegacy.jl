@@ -9,25 +9,25 @@ module VTKLegacy
     Object that contains all the information and datasets from a Legacy VTK file that has been read.
 
     # Fields
-    - `data`: 4-dimensional array of `Float64` that holds the datasets of the vtk file.
-    - `nx`: Number of cells in the `x` direction.
-    - `ny`: Number of cells in the `y` direction.
-    - `nz`: Number of cells in the `z` direction.
-    - `dx`: Cell size in the `x` direction.
-    - `dy`: Cell size in the `y` direction.
-    - `dz`: Cell size in the `z` direction.
-    - `x0`: Position of origin in the `x` direction.
-    - `y0`: Position of origin in the `y` direction.
-    - `z0`: Position of origin in the `z` direction.
-    - `x`: Vector of cell positions in the `x` direction.
-    - `y`: Vector of cell positions in the `y` direction.
-    - `z`: Vector of cell positions in the `z` direction.
-    - `dimensions`: Vector containing the number of cells in each dimension: `[nx,ny,nz]`.
-    - `spacing`: Vector contanining the cell size in each direction: `[dx,dy,dz]`.
-    - `origin`: Vector containing the origin of the mesh: `[x0,y0,z0]`.
-    - `datanames`: Vector containing the names of the datasets in the VTK file.
-    - `dataattribute`: Vector containing the attribute of each dataset in the VTK file.
-    - `dictionary`: Dictionary with the `datanames` as the `keys` and the indexes of `data` as the `values`. 
+    - `data::Array{Float64,4}`: 4-dimensional array of `Float64` that holds the datasets of the vtk file.
+    - `nx::Int32`: Number of cells in the `x` direction.
+    - `ny::Int32`: Number of cells in the `y` direction.
+    - `nz::Int32`: Number of cells in the `z` direction.
+    - `dx::Float64`: Cell size in the `x` direction.
+    - `dy::Float64`: Cell size in the `y` direction.
+    - `dz::Float64`: Cell size in the `z` direction.
+    - `x0::Float64`: Position of origin in the `x` direction.
+    - `y0::Float64`: Position of origin in the `y` direction.
+    - `z0::Float64`: Position of origin in the `z` direction.
+    - `x::Vector{Float64}`: Cell positions in the `x` direction.
+    - `y::Vector{Float64}`: Cell positions in the `y` direction.
+    - `z::Vector{Float64}`: Cell positions in the `z` direction.
+    - `dimensions::Vector{Int64}`: Number of cells in each dimension: `[nx,ny,nz]`.
+    - `spacing::Vector{Float64}`: Cell size in each dimension: `[dx,dy,dz]`.
+    - `origin::Vector{Float64}`: Origin of the mesh: `[x0,y0,z0]`.
+    - `datanames::Vector{String}`: Names of the datasets in the VTK file.
+    - `dataattribute::Vector{String}`: Attribute of each dataset in the VTK file.
+    - `dictionary::Dict{String,Union{Int64,UnitRange{Int64}}}`: Dictionary with the `datanames` as the `keys` and the indexes of `data` as the `values`. 
     """
     mutable struct Mesh
         data::Array{Float64,4}
@@ -47,7 +47,7 @@ module VTKLegacy
         spacing::Vector{Float64}
         origin::Vector{Float64}
         datanames::Vector{String}
-        datatype::Vector{String}
+        dataattribute::Vector{String}
         dictionary::Dict{String,Union{Int64,UnitRange{Int64}}}
         Mesh() = new()
     end
@@ -130,7 +130,7 @@ module VTKLegacy
         m.spacing = [m.dx,m.dy,m.dz]
         m.origin = [m.x0,m.y0,m.z0]
         m.datanames = names
-        m.datatype = dtype
+        m.dataattribute = dtype
         m.dictionary = d
         m.x = m.x0.+collect(1:m.nx).*m.dx.-m.dx/2
         m.y = m.y0.+collect(1:m.ny).*m.dy.-m.dy/2
@@ -139,7 +139,7 @@ module VTKLegacy
         println("Spacing: $(m.spacing)")
         println("Origin: $(m.origin)")
         println("Name of the data: $(m.datanames)")
-        println("Data type: $(m.datatype)")
+        println("Data type: $(m.dataattribute)")
         return m
     end
     function heatmapcb(arr::Array{Float64,2},sn::String,xaxis::Vector{Float64},yaxis::Vector{Float64},f = Figure())
@@ -221,15 +221,15 @@ module VTKLegacy
     end
     function probe(fp::String, fig = Figure(size = (1200,800)))
         m = LoadVTK(fp)
-        sq = sqrt(length(m.datatype))
+        sq = sqrt(length(m.dataattribute))
         xmax = ceil(Int64,sq)
         ymax = floor(Int64,sq)+floor(Int64,sq-floor(sq) + 0.5)
         xpos = 1
         ypos = 1
-        for n in 1:length(m.datatype)
-            if m.datatype[n] == "SCALARS"
+        for n in 1:length(m.dataattribute)
+            if m.dataattribute[n] == "SCALARS"
                 heatmapcb(m.data[m.dictionary[m.datanames[n]],:,:,round(Int64,m.nz/2)],m.datanames[n],m.x,m.y,fig[ypos,xpos])
-            elseif m.datatype[n] == "VECTORS"
+            elseif m.dataattribute[n] == "VECTORS"
                 heatmapcb(magnitude(m,m.datanames[n][1:end-1])[:,:,round(Int64,m.nz/2)],m.datanames[n][1:end-1],m.x,m.y,fig[ypos,xpos])
             end
             xpos = xpos + 1
