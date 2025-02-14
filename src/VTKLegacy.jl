@@ -3,6 +3,7 @@ module VTKLegacy
     using LoopVectorization
     using CairoMakie
 
+    export Mesh, LoadVTK, integrate, ranges, magnitude, probe
     """
         Mesh
 
@@ -148,7 +149,18 @@ module VTKLegacy
         cb = Colorbar(f[1,2],hm, label = "$(sn)",tickformat = "{:.1e}")
         f
     end
-    function Integrate(m::Mesh,var::Union{Int64,String,Vector{Union{Int64,String}},Vector{Int64},Vector{String}}=1)
+    """
+        integrate(m::Mesh,var::Union{Int64,String,Vector{Union{Int64,String}}}=1)
+
+    Compute the discrete integral of `var` in the whole mesh `m` as: 
+    
+    ```math
+    I = \\sum_{(i,j,k)=(1,1,1)}^{N_x,N_y,N_z}\\text{var}_{(i,j,k)}\\Delta x\\Delta y\\Delta z.
+    ```
+
+    If `var` is unspecified, integrate only the dataset with index 1 in `m.data`
+    """
+    function integrate(m::Mesh,var::Union{Int64,String,Vector{Union{Int64,String}}}=1)
         (nx, ny, nz) = m.dimensions
         (dx, dy, dz) = m.spacing
         prs = []
@@ -187,6 +199,14 @@ module VTKLegacy
             println(d[prs[1]], " ", sum)
         end
     end
+
+    """
+        ranges(m::Mesh,io::Union{IOStream,Nothing}=nothing)
+    
+    Obtain the maximum and minimum values of each dataset in `m` and print them to `io` followed by a newline.
+
+    If `io` is unspecified, prints the values to the default output stream `stdout`.
+    """
     function ranges(m::Mesh,io::Union{IOStream,Nothing}=nothing)
         ndata = length(m.data[:,1,1,1])
         if io == nothing
@@ -203,6 +223,12 @@ module VTKLegacy
             end
         end
     end
+
+    """
+        magnitude(m::Mesh,dataname::String)
+
+    Compute the magnitude of a dataset in `m` with name `dataname` and attribute Vector.
+    """
     function magnitude(m::Mesh,vector::String)
         magarr = zeros(m.nx,m.ny,m.nz)
         rng = m.dictionary[vector]
@@ -219,11 +245,17 @@ module VTKLegacy
         end
         return magarr
     end
+
+    """
+        probe(filename::String, fig = Figure())
+
+    Generate heatmaps of each dataset in the VTK file `filename` at `nz/2`. If there are Vector datasets, plot the magnitude of the Vector array.
+    """
     function probe(fp::String, fig = Figure(size = (1200,800)))
         m = LoadVTK(fp)
         sq = sqrt(length(m.dataattribute))
         xmax = ceil(Int64,sq)
-        ymax = floor(Int64,sq)+floor(Int64,sq-floor(sq) + 0.5)
+        #ymax = floor(Int64,sq)+floor(Int64,sq-floor(sq) + 0.5)
         xpos = 1
         ypos = 1
         for n in 1:length(m.dataattribute)
