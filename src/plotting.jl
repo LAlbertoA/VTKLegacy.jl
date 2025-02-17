@@ -1,9 +1,9 @@
 """
-    probe(filename::String, fig = Figure())
+    probe(filename::String, save::Bool = false, fig = Figure())
 
 Generate heatmaps of each dataset in the VTK file `filename` at `nz/2`. If there are Vector datasets, plot the magnitude of the Vector array.
 """
-function probe(fp::String, fig = Figure(size = (1200,800)))
+function probe(fp::String, sv::Bool = false, fig = Figure(size = (1200,800)))
     m = LoadVTK(fp)
     sq = sqrt(length(m.dataattribute))
     xmax = ceil(Int64,sq)
@@ -23,7 +23,16 @@ function probe(fp::String, fig = Figure(size = (1200,800)))
         end
     end
     GC.gc()
-    fig
+    if sv == false
+        display(fig)
+    else
+        ind = findlast('/', fp)
+        if ind == nothing
+            save("probe.png",fig)
+        else
+            save(fp[1:ind]*"probe.png",fig)
+        end
+    end
 end
 
 function heatmapcb(arr::Array{Float64,2},sn::String,xaxis::Vector{Float64},yaxis::Vector{Float64},f = Figure())
