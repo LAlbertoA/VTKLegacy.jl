@@ -43,6 +43,6 @@ mutable struct Mesh
     origin::Vector{Float64}
     datanames::Vector{String}
     dataattribute::Vector{String}
-    dictionary::Dict{String,Union{Int64,UnitRange{Int64}}}
+    dictionary::Dict{String,IntOrRng}
     Mesh() = new()
 end

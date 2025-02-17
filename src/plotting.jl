@@ -7,7 +7,6 @@ function probe(fp::String, sv::Bool = false, fig = Figure(size = (1200,800)))
     m = LoadVTK(fp)
     sq = sqrt(length(m.dataattribute))
     xmax = ceil(Int64,sq)
-    #ymax = floor(Int64,sq)+floor(Int64,sq-floor(sq) + 0.5)
     xpos = 1
     ypos = 1
     for n in 1:length(m.dataattribute)

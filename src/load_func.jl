@@ -7,7 +7,7 @@ function LoadVTK(fp::String)
     m = Mesh()
     names = String[]
     dtype = String[]
-    d = Dict{String,Union{Int64,UnitRange{Int64}}}()
+    d = Dict{String,IntOrRng}()
     open(fp) do f
         for i in 1:8
         s = readline(f)

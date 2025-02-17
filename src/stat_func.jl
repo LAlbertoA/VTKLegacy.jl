@@ -9,12 +9,12 @@ I = \\sum_{(i,j,k)=(1,1,1)}^{N_x,N_y,N_z}\\text{var}_{(i,j,k)}\\Delta x\\Delta y
 
 If `var` is unspecified, integrate only the dataset with index 1 in `m.data`
 """
-function integrate(m::Mesh,var::Union{Int64,String,Vector{Union{Int64,String}}}=1)
+function integrate(m::Mesh,var::Union{IntOrStr,Vector{IntOrStr}}=1)
     (nx, ny, nz) = m.dimensions
     (dx, dy, dz) = m.spacing
     prs = []
     d = Dict(map(reverse,collect(m.dictionary)))
-    if typeof(var) == Vector{Union{Int64,String}} || typeof(var) == Vector{Int64} || typeof(var) == Vector{String}
+    if typeof(var) == Vector{IntOrStr} || typeof(var) == Vector{Int64} || typeof(var) == Vector{String}
         for p in 1:length(var)
             if typeof(var[p]) == Int64
                 push!(prs,var[p])
