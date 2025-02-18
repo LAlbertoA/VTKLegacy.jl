@@ -5,6 +5,7 @@ Object that contains all the information and datasets from a Legacy VTK file tha
 
 # Fields
 - `data::Array{Float64,4}`: 4-dimensional array of `Float64` that holds the datasets of the vtk file.
+- `title::String`: Title of the VTK file
 - `nx::Int32`: Number of cells in the `x` direction.
 - `ny::Int32`: Number of cells in the `y` direction.
 - `nz::Int32`: Number of cells in the `z` direction.
@@ -26,6 +27,7 @@ Object that contains all the information and datasets from a Legacy VTK file tha
 """
 mutable struct Mesh
     data::Array{Float64,4}
+    title::String
     nx::Int32
     ny::Int32
     nz::Int32

@@ -10,8 +10,10 @@ function LoadVTK(fp::String)
     d = Dict{String,IntOrRng}()
     open(fp) do f
         for i in 1:8
-        s = readline(f)
-        if i == 5
+            s = readline(f)
+            if i == 2
+                m.title = s
+            elseif i == 5
                 s = split(s)
                 m.nx = parse(Int32,s[2])
                 m.ny = parse(Int32,s[3])
@@ -61,8 +63,11 @@ function LoadVTK(fp::String)
                 m.data = cat(m.data,temp,dims=1)
             elseif length(s)!= 0 && s[1] == "VECTORS"
                 push!(names,s[2]*"x")
+                d[s[2]*"x"] = length(names)
                 push!(names,s[2]*"y")
+                d[s[2]*"y"] = length(names)
                 push!(names,s[2]*"z")
+                d[s[2]*"z"] = length(names)
                 push!(dtype, s[1])
                 d[s[2]] = length(names)-2:length(names)
                 temp = Array{Float64,4}(undef,3,m.nx,m.ny,m.nz)
@@ -81,6 +86,7 @@ function LoadVTK(fp::String)
     m.x = m.x0.+collect(1:m.nx).*m.dx.-m.dx/2
     m.y = m.y0.+collect(1:m.ny).*m.dy.-m.dy/2
     m.z = m.z0.+collect(1:m.nz).*m.dz.-m.dz/2
+    println("Title: $(m.title)")
     println("Dimensions: $(m.dimensions)")
     println("Spacing: $(m.spacing)")
     println("Origin: $(m.origin)")
