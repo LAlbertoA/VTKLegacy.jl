@@ -22,11 +22,11 @@ Object that contains all the information and datasets from a Legacy VTK file tha
 - `spacing::Vector{Float64}`: Cell size in each dimension: `[dx,dy,dz]`.
 - `origin::Vector{Float64}`: Origin of the mesh: `[x0,y0,z0]`.
 - `datanames::Vector{String}`: Names of the datasets in the VTK file.
-- `dataattribute::Vector{String}`: Attribute of each dataset in the VTK file.
+- `dataAttributes::Vector{String}`: Attribute of each dataset in the VTK file.
 - `dictionary::Dict{String,Union{Int64,UnitRange{Int64}}}`: Dictionary with the `datanames` as the `keys` and the indexes of `data` as the `values`. 
 """
 mutable struct Mesh
-    data::Array{Float64,4}
+    data::Array{Union{Float64,Float32,Int32,Int16},4}
     title::String
     nx::Int32
     ny::Int32
@@ -40,11 +40,11 @@ mutable struct Mesh
     x::Vector{Float64}
     y::Vector{Float64}
     z::Vector{Float64}
-    dimensions::Vector{Int64}
+    dimensions::Vector{Int32}
     spacing::Vector{Float64}
     origin::Vector{Float64}
-    datanames::Vector{String}
-    dataattribute::Vector{String}
+    dataNames::Vector{String}
+    dataAttributes::Vector{String}
     dictionary::Dict{String,IntOrRng}
     Mesh() = new()
 end

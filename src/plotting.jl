@@ -5,14 +5,14 @@ Generate heatmaps of each dataset in the VTK file `filename` at `nz/2`. If there
 """
 function probe(fp::String, sv::Bool = false, fig = Figure(size = (1200,800)))
     m = LoadVTK(fp)
-    sq = sqrt(length(m.dataattribute))
+    sq = sqrt(length(m.dataAttributes))
     xmax = ceil(Int64,sq)
     xpos = 1
     ypos = 1
-    for n in 1:length(m.dataattribute)
-        if m.dataattribute[n] == "SCALARS"
+    for n in 1:length(m.dataAttributes)
+        if m.dataAttributes[n] == "SCALARS"
             heatmapcb(m.data[m.dictionary[m.datanames[n]],:,:,round(Int64,m.nz/2)],m.datanames[n],m.x,m.y,fig[ypos,xpos])
-        elseif m.dataattribute[n] == "VECTORS"
+        elseif m.dataAttributes[n] == "VECTORS"
             heatmapcb(magnitude(m,m.datanames[n][1:end-1])[:,:,round(Int64,m.nz/2)],m.datanames[n][1:end-1],m.x,m.y,fig[ypos,xpos])
         end
         xpos = xpos + 1
