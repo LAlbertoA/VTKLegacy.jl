@@ -1,5 +1,5 @@
 """
-    integrate(m::Mesh,var::Union{Int64,String,Vector{Union{Int64,String}}}=1)
+    integrate(m::StructuredPoints,var::Union{Int64,String,Vector{Union{Int64,String}}}=1)
 
 Compute the discrete integral of `var` in the whole mesh `m` as: 
 
@@ -9,7 +9,7 @@ I = \\sum_{(i,j,k)=(1,1,1)}^{N_x,N_y,N_z}\\text{var}_{(i,j,k)}\\Delta x\\Delta y
 
 If `var` is unspecified, integrate only the dataset with index 1 in `m.data`
 """
-function integrate(m::Mesh,var::Union{IntOrStr,Vector{IntOrStr}}=1)
+function integrate(m::StructuredPoints,var::Union{IntOrStr,Vector{IntOrStr}}=1)
     (nx, ny, nz) = m.dimensions
     (dx, dy, dz) = m.spacing
     prs = []
@@ -49,13 +49,13 @@ function integrate(m::Mesh,var::Union{IntOrStr,Vector{IntOrStr}}=1)
     end
 end
 """
-    ranges(m::Mesh,io::Union{IOStream,Nothing}=nothing)
+    ranges(m::StructuredPoints,io::Union{IOStream,Nothing}=nothing)
 
 Obtain the maximum and minimum values of each dataset in `m` and print them to `io` followed by a newline.
 
 If `io` is unspecified, prints the values to the default output stream `stdout`.
 """
-function ranges(m::Mesh,io::Union{IOStream,Nothing}=nothing)
+function ranges(m::StructuredPoints,io::Union{IOStream,Nothing}=nothing)
     ndata = length(m.data[:,1,1,1])
     if io == nothing
         for i in 1:ndata
@@ -73,11 +73,11 @@ function ranges(m::Mesh,io::Union{IOStream,Nothing}=nothing)
 end
 
 """
-    magnitude(m::Mesh,dataname::String)
+    magnitude(m::StructuredPoints,dataname::String)
 
 Compute the magnitude of a dataset in `m` with name `dataname` and attribute Vector.
 """
-function magnitude(m::Mesh,vector::String)
+function magnitude(m::StructuredPoints,vector::String)
     magarr = zeros(m.nx,m.ny,m.nz)
     rng = m.dictionary[vector]
     @turbo for i in 1:m.nx

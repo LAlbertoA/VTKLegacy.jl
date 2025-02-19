@@ -5,7 +5,7 @@ module VTKLegacy
 
     import Base.getindex, Base.show                            ## importing Base functions to extend them
 
-    export Mesh, LoadVTK, integrate, ranges, magnitude, probe  ## Exported names from this package
+    export StructuredPoints, LoadVTK, integrate, ranges, magnitude, probe  ## Exported names from this package
 
     const IntOrStr = Union{Int64,String}                       ## Custom Union Types
     const IntOrRng = Union{Int64,UnitRange{Int64}}             ## "
@@ -20,21 +20,21 @@ module VTKLegacy
     include("plotting.jl")
 
     """
-        getindex(m::Mesh, name::String)
+        getindex(m::StructuredPoints, name::String)
 
     Retrieve the array stored in the `m.data` field with name `name`. The `name` should be an element of `m.dataNames`. 
     The syntax `m["dataname"]` is converted by the compiler to `getindex(m,"dataname")`.
     """
-    function getindex(m::Mesh, name::String)
+    function getindex(m::StructuredPoints, name::String)
         return m.data[m.dictionary[name],:,:,:]
     end
 
     """
-        show(m::Mesh)
+        show(m::StructuredPoints)
 
-    Print header information of the VTK file contained in the Mesh object `m`
+    Print header information of the VTK file contained in the StructuredPoints object `m`
     """
-    function show(m::Mesh)
+    function show(m::StructuredPoints)
         println("Title: $(m.title)")
         println("Dimensions: $(m.dimensions)")
         println("Spacing: $(m.spacing)")

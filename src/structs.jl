@@ -1,5 +1,5 @@
 """
-    Mesh
+    StructuredPoints
 
 Object that contains all the information and datasets from a Legacy VTK file that has been read.
 
@@ -25,8 +25,8 @@ Object that contains all the information and datasets from a Legacy VTK file tha
 - `dataAttributes::Vector{String}`: Attribute of each dataset in the VTK file.
 - `dictionary::Dict{String,Union{Int64,UnitRange{Int64}}}`: Dictionary with the `dataNames` as the `keys` and the indexes of `data` as the `values`. 
 """
-mutable struct Mesh
-    data::Array{Union{Float64,Float32,Int32,Int16},4}
+mutable struct StructuredPoints
+    data::Array{AbstractFloat,4}
     title::String
     nx::Int32
     ny::Int32
@@ -46,5 +46,22 @@ mutable struct Mesh
     dataNames::Vector{String}
     dataAttributes::Vector{String}
     dictionary::Dict{String,IntOrRng}
-    Mesh() = new()
+    StructuredPoints() = new()
+end
+
+mutable struct UnstructuredGrid
+    title::String
+    npoints::Int32
+    ncells::Int32
+    points::Array{AbstractFloat,2}
+    cells::Vector{Int32}
+    cellTypes::Vector{Int32}
+    cellData::Array{AbstractFloat,2}
+    cellDataNames::Vector{String}
+    cellDataAttributes::Vector{String}
+    pointData::Array{AbstractFloat,2}
+    pointDataNames::Vector{String}
+    pointDataAttributes::Vector{String}
+    dictionary::Dict{String,IntOrRng}
+    UnstructuredGrid() = new()
 end
