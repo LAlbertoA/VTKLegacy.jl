@@ -48,6 +48,7 @@ mutable struct StructuredPoints
     dictionary::Dict{String,IntOrRng}
     StructuredPoints() = new()
 end
+
 """
     UnstructuredGrid
 
