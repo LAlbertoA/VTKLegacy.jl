@@ -87,7 +87,7 @@ function loadSP(f::IOStream, m::Mesh, title::String)
     m.dimensions = [m.nx,m.ny,m.nz]
     m.spacing = [m.dx,m.dy,m.dz]
     m.origin = [m.x0,m.y0,m.z0]
-    m.datanames = names
+    m.dataNames = names
     m.dataAttributes = dtype
     m.dictionary = d
     m.x = m.x0.+collect(1:m.nx).*m.dx.-m.dx/2
@@ -97,6 +97,6 @@ function loadSP(f::IOStream, m::Mesh, title::String)
     println("Dimensions: $(m.dimensions)")
     println("Spacing: $(m.spacing)")
     println("Origin: $(m.origin)")
-    println("Name of the data: $(m.datanames)")
+    println("Name of the data: $(m.dataNames)")
     println("Data type: $(m.dataAttributes)")
 end

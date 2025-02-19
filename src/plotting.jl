@@ -11,9 +11,9 @@ function probe(fp::String, sv::Bool = false, fig = Figure(size = (1200,800)))
     ypos = 1
     for n in 1:length(m.dataAttributes)
         if m.dataAttributes[n] == "SCALARS"
-            heatmapcb(m.data[m.dictionary[m.datanames[n]],:,:,round(Int64,m.nz/2)],m.datanames[n],m.x,m.y,fig[ypos,xpos])
+            heatmapcb(m.data[m.dictionary[m.dataNames[n]],:,:,round(Int64,m.nz/2)],m.dataNames[n],m.x,m.y,fig[ypos,xpos])
         elseif m.dataAttributes[n] == "VECTORS"
-            heatmapcb(magnitude(m,m.datanames[n][1:end-1])[:,:,round(Int64,m.nz/2)],m.datanames[n][1:end-1],m.x,m.y,fig[ypos,xpos])
+            heatmapcb(magnitude(m,m.dataNames[n][1:end-1])[:,:,round(Int64,m.nz/2)],m.dataNames[n][1:end-1],m.x,m.y,fig[ypos,xpos])
         end
         xpos = xpos + 1
         if xpos > xmax

@@ -21,9 +21,9 @@ Object that contains all the information and datasets from a Legacy VTK file tha
 - `dimensions::Vector{Int64}`: Number of cells in each dimension: `[nx,ny,nz]`.
 - `spacing::Vector{Float64}`: Cell size in each dimension: `[dx,dy,dz]`.
 - `origin::Vector{Float64}`: Origin of the mesh: `[x0,y0,z0]`.
-- `datanames::Vector{String}`: Names of the datasets in the VTK file.
+- `dataNames::Vector{String}`: Names of the datasets in the VTK file.
 - `dataAttributes::Vector{String}`: Attribute of each dataset in the VTK file.
-- `dictionary::Dict{String,Union{Int64,UnitRange{Int64}}}`: Dictionary with the `datanames` as the `keys` and the indexes of `data` as the `values`. 
+- `dictionary::Dict{String,Union{Int64,UnitRange{Int64}}}`: Dictionary with the `dataNames` as the `keys` and the indexes of `data` as the `values`. 
 """
 mutable struct Mesh
     data::Array{Union{Float64,Float32,Int32,Int16},4}

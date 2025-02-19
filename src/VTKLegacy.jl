@@ -22,7 +22,7 @@ module VTKLegacy
     """
         getindex(m::Mesh, name::String)
 
-    Retrieve the array stored in the `m.data` field with name `name`. The `name` should be an element of `m.datanames`. 
+    Retrieve the array stored in the `m.data` field with name `name`. The `name` should be an element of `m.dataNames`. 
     The syntax `m["dataname"]` is converted by the compiler to `getindex(m,"dataname")`.
     """
     function getindex(m::Mesh, name::String)

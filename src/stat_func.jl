@@ -61,13 +61,13 @@ function ranges(m::Mesh,io::Union{IOStream,Nothing}=nothing)
         for i in 1:ndata
             @views mx = maximum(m.data[i,:,:,:])
             @views mn = minimum(m.data[i,:,:,:])
-            println("$(m.datanames[i]): Max = ", mx, ", Min = ", mn)
+            println("$(m.dataNames[i]): Max = ", mx, ", Min = ", mn)
         end
     else
         for i in 1:ndata
             @views mx = maximum(m.data[i,:,:,:])
             @views mn = minimum(m.data[i,:,:,:])
-            println(io,"$(m.datanames[i]): Max = ", mx, ", Min = ", mn)
+            println(io,"$(m.dataNames[i]): Max = ", mx, ", Min = ", mn)
         end
     end
 end
