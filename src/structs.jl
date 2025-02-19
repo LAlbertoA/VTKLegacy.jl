@@ -1,7 +1,7 @@
 """
     StructuredPoints
 
-Object that contains all the information and datasets from a Legacy VTK file that has been read.
+Object that contains all the information and datasets from a Legacy VTK file with a STRUCTURED_POINTS geometry/topology.
 
 # Fields
 - `data::Array{Float64,4}`: 4-dimensional array of `Float64` that holds the datasets of the vtk file.
@@ -48,7 +48,27 @@ mutable struct StructuredPoints
     dictionary::Dict{String,IntOrRng}
     StructuredPoints() = new()
 end
+"""
+    UnstructuredGrid
 
+Object that contains all the information and datasets from a Legacy VTK file with a UNSTRUCTURED_GRID geometry/topology.
+
+# Fields
+- `title::String`: Title of the VTK file
+- `npoints::Int32`: Number of points that define the cells.
+- `ncells::Int32`: Number of cells in the file.
+- `points::Array{AbstractFloat,2}`: Array containing the coordinates of the points in the grid.
+- `cells::Vector{Int32}`: Number and indexes of points defining each cell
+- `cellTypes::Vector{Int32}`: Type of each cell. Integer value between 1 and 16 
+- `cellData::Array{AbstractFloat,2}`: Array containing each dataset in the CELL_DATA section.
+- `cellDataNames::Vector{String}`: Name of each dataset in the CELL_DATA section.
+- `cellDataAttributes::Vector{String}`: Attribute of each dataset in the CELL_DATA section.
+- `pointData::Array{AbstractFloat,2}`: Array containing each dataset in the POINT_DATA section.
+- `pointDataNames::Vector{String}`: Name of each dataset in the POINT_DATA section.
+- `pointDataAttributes::Vector{String}`: Attribute of each dataset in the POINT_DATA section.
+- `dictionary::Dict{String,IntOrRng}`: Dictionary with the `cellDataNames` and `pointDataNames` as the `keys` and the 
+indexes of `cellData` and `pointData` as the `values`.
+"""
 mutable struct UnstructuredGrid
     title::String
     npoints::Int32

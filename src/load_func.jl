@@ -1,7 +1,8 @@
 """
     LoadVTK(filename::String)
 
-Read the VTK file `filename` in to an object of type `StructuredPoints`. Currently only StructuredPoints are supported.
+Read the VTK file `filename` in to an object of type `StructuredPoints` or `UnstructuredGrid`.
+Currently only StructuredPoints and UnstructuredGrid are supported.
 """
 function LoadVTK(fp::String)
     open(fp) do f
