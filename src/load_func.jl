@@ -135,7 +135,6 @@ function loadUSG(f::IOStream, m::UnstructuredGrid, title::String)
             end
         end
     end
-    println("ccd = ", ccd, " cpd = ", cpd)
     m.points = ntoh.(m.points)
     m.cells = ntoh.(m.cells)
     m.cellTypes = ntoh.(m.cellTypes)
