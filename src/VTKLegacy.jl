@@ -30,16 +30,27 @@ module VTKLegacy
     end
 
     """
-        show(m::StructuredPoints)
+        show(m::Union{StructuredPoints,UnstructuredGrid})
 
-    Print header information of the VTK file contained in the StructuredPoints object `m`
+    Print general information of the VTK file contained in the object `m`
     """
-    function show(m::StructuredPoints)
-        println("Title: $(m.title)")
-        println("Dimensions: $(m.dimensions)")
-        println("Spacing: $(m.spacing)")
-        println("Origin: $(m.origin)")
-        println("Name of the data: $(m.dataNames)")
-        println("Data type: $(m.dataAttributes)")
+    function show(m::Union{StructuredPoints,UnstructuredGrid})
+        t = typeof(m)
+        if t == StructuredPoints
+            println("Title: $(m.title)")
+            println("Dimensions: $(m.dimensions)")
+            println("Spacing: $(m.spacing)")
+            println("Origin: $(m.origin)")
+            println("Name of the data: $(m.dataNames)")
+            println("Data type: $(m.dataAttributes)")
+        elseif t == UnstructuredGrid
+            println("Title: $(m.title)")
+            println("Number of Cells: $(m.ncells)")
+            println("Name of cell datasets: $(m.cellDataNames)")
+            println("Cell data types: $(m.cellDataAttributes)")
+            println("Number of Points: $(m.npoints)")
+            println("Name of point datasets: $(m.pointDataNames)")
+            println("Point data types: $(m.pointDataAttributes)")
+        end
     end
 end

@@ -5,7 +5,7 @@ Object that contains all the information and datasets from a Legacy VTK file wit
 
 # Fields
 - `data::Array{Float64,4}`: 4-dimensional array of `Float64` that holds the datasets of the vtk file.
-- `title::String`: Title of the VTK file
+- `title::String`: Title of the VTK file.
 - `nx::Int32`: Number of cells in the `x` direction.
 - `ny::Int32`: Number of cells in the `y` direction.
 - `nz::Int32`: Number of cells in the `z` direction.
@@ -55,20 +55,20 @@ end
 Object that contains all the information and datasets from a Legacy VTK file with a UNSTRUCTURED_GRID geometry/topology.
 
 # Fields
-- `title::String`: Title of the VTK file
+- `title::String`: Title of the VTK file.
 - `npoints::Int32`: Number of points that define the cells.
 - `ncells::Int32`: Number of cells in the file.
 - `points::Array{AbstractFloat,2}`: Array containing the coordinates of the points in the grid.
-- `cells::Vector{Int32}`: Number and indexes of points defining each cell
+- `cells::Vector{Int32}`: Number and indexes of points defining each cell.
 - `cellTypes::Vector{Int32}`: Type of each cell. Integer value between 1 and 16 
 - `cellData::Array{AbstractFloat,2}`: Array containing each dataset in the CELL_DATA section.
 - `cellDataNames::Vector{String}`: Name of each dataset in the CELL_DATA section.
 - `cellDataAttributes::Vector{String}`: Attribute of each dataset in the CELL_DATA section.
+- `cellDict::Dict{String,IntOrRng}`: Dictionary with the `cellDataNames` as the `keys` and the indexes of `cellData` as the `values`.
 - `pointData::Array{AbstractFloat,2}`: Array containing each dataset in the POINT_DATA section.
 - `pointDataNames::Vector{String}`: Name of each dataset in the POINT_DATA section.
 - `pointDataAttributes::Vector{String}`: Attribute of each dataset in the POINT_DATA section.
-- `dictionary::Dict{String,IntOrRng}`: Dictionary with the `cellDataNames` and `pointDataNames` as the `keys` and the 
-indexes of `cellData` and `pointData` as the `values`.
+- `pointDict::Dict{String,IntOrRng}`: Dictionary with the `pointDataNames` as the `keys` and the indexes of `pointData` as the `values`.
 """
 mutable struct UnstructuredGrid
     title::String
@@ -77,12 +77,13 @@ mutable struct UnstructuredGrid
     points::Array{AbstractFloat,2}
     cells::Vector{Int32}
     cellTypes::Vector{Int32}
-    cellData::Array{AbstractFloat,2}
+    cellData::Union{Array{AbstractFloat,2}, Nothing}
     cellDataNames::Vector{String}
     cellDataAttributes::Vector{String}
-    pointData::Array{AbstractFloat,2}
+    cellDict::Dict{String,IntOrRng}
+    pointData::Union{Array{AbstractFloat,2}, Nothing}
     pointDataNames::Vector{String}
     pointDataAttributes::Vector{String}
-    dictionary::Dict{String,IntOrRng}
+    pointDict::Dict{String,IntOrRng}
     UnstructuredGrid() = new()
 end
