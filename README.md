@@ -19,3 +19,4 @@ Then load a VTK file by using the `LoadVTK` function
 vtk = LoadVTK("path/to/file.vtk")
 ```
 This will create a `StructuredPoints` or `UnstructuredGrid` object that contains all the information and datasets of the file.
+Also it will print general information of the file.

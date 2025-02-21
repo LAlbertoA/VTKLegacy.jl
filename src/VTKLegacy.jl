@@ -6,7 +6,7 @@ module VTKLegacy
     import Base.getindex, Base.show                            ## importing Base functions to extend them
 
     export StructuredPoints, LoadVTK, integrate, ranges
-    export magnitude, probe                                    ## Exported names from this package
+    export magnitude, probe, UnstructuredGrid                  ## Exported names from this package
 
     const IntOrStr = Union{Int64,String}                       ## Custom Union Types
     const IntOrRng = Union{Int64,UnitRange{Int64}}             ## "
