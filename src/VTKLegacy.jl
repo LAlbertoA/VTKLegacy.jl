@@ -1,11 +1,12 @@
 module VTKLegacy
 
-    using LoopVectorization                                    ## Usefull package to optimize some for-loops
+    ## Usefull package to optimize some for-loops
     using CairoMakie                                           ## Visualization package for some functions
 
     import Base.getindex, Base.show                            ## importing Base functions to extend them
 
-    export StructuredPoints, LoadVTK, integrate, ranges, magnitude, probe  ## Exported names from this package
+    export StructuredPoints, LoadVTK, integrate, ranges
+    export magnitude, probe                                    ## Exported names from this package
 
     const IntOrStr = Union{Int64,String}                       ## Custom Union Types
     const IntOrRng = Union{Int64,UnitRange{Int64}}             ## "

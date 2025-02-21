@@ -34,9 +34,9 @@ function probe(fp::String, sv::Bool = false, fig = Figure(size = (1200,800)))
     end
 end
 
-function heatmapcb(arr::Array{Float64,2},sn::String,xaxis::Vector{Float64},yaxis::Vector{Float64},f = Figure())
+function heatmapcb(arr,sn::String,xaxis::Vector{Float64},yaxis::Vector{Float64},f = Figure())
     ax = Axis(f[1,1], xtickformat = "{:.1e}", ytickformat = "{:.1e}")
     hm = heatmap!(ax,xaxis,yaxis,arr)
-    cb = Colorbar(f[1,2],hm, label = "$(sn)",tickformat = "{:.1e}")
+    Colorbar(f[1,2],hm, label = "$(sn)",tickformat = "{:.1e}")
     f
 end

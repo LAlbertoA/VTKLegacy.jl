@@ -22,7 +22,7 @@ function integrate(m::StructuredPoints,var::Union{IntOrStr,Vector{IntOrStr}}=1)
                 push!(prs,m.dictionary[var[p]])
             end
             sum = 0
-            @turbo for i in 1:nx
+            for i in 1:nx
                 for j in 1:ny
                     for k in 1:nz
                         sum = sum + m.data[prs[p],i,j,k]*dx*dy*dz
@@ -38,7 +38,7 @@ function integrate(m::StructuredPoints,var::Union{IntOrStr,Vector{IntOrStr}}=1)
             push!(prs,var)
         end
         sum = 0
-        @turbo for i in 1:nx
+        for i in 1:nx
             for j in 1:ny
                 for k in 1:nz
                     sum = sum + m.data[prs[1],i,j,k]*dx*dy*dz
@@ -80,7 +80,7 @@ Compute the magnitude of a dataset in `m` with name `dataname` and attribute Vec
 function magnitude(m::StructuredPoints,vector::String)
     magarr = zeros(m.nx,m.ny,m.nz)
     rng = m.dictionary[vector]
-    @turbo for i in 1:m.nx
+    for i in 1:m.nx
         for j in 1:m.ny
             for k in 1:m.nz
                 sum = 0
