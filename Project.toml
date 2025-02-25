@@ -1,7 +1,7 @@
 name = "VTKLegacy"
 uuid = "0a04e04c-3d81-46c0-89a4-d6cdbba47ab1"
 authors = ["Luis Alberto Arcos Rojas"]
-version = "0.0.1-DEV"
+version = "0.1.0"
 
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
