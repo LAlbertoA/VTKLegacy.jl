@@ -75,7 +75,7 @@ end
 """
     magnitude(m::StructuredPoints,dataname::String)
 
-Compute the magnitude of a dataset in `m` with name `dataname` and attribute Vector.
+Returns the magnitude of a dataset in `m` with name `dataname` and attribute Vector.
 """
 function magnitude(m::StructuredPoints,vector::String)
     magarr = zeros(m.nx,m.ny,m.nz)
@@ -89,6 +89,48 @@ function magnitude(m::StructuredPoints,vector::String)
                 end
                 magarr[i,j,k] = sqrt(sum)
             end
+        end
+    end
+    return magarr
+end
+
+"""
+    magnitude(arr::Array{AbstractFloat,4})
+
+Returns the magnitude of a vector dataset of size (axis,nx,ny,nz) where `axis` is 3 (\"x\", \"y\" and \"z\" dimensions) and nx, ny and nz are the number of cells in each axis.
+"""
+function magnitude(arr::Array{AbstractFloat,4})
+    sz = arr.size
+    magarr = zeros(sz[2],sz[3],sz[4])
+    for i in 1:sz[2]
+        for j in 1:sz[3]
+            for k in 1:sz[4]
+                sum = 0
+                for n in 1:sz[1]
+                    sum = sum + arr[n,i,j,k]^2
+                end
+                magarr[i,j,k] = sqrt(sum)
+            end
+        end
+    end
+    return magarr
+end
+
+"""
+    magnitude(arr::Array{AbstractFloat,3})
+
+Returns the magnitude of a vector dataset of size (axis,nx,ny) where `axis` is 3 (\"x\", \"y\" and \"z\" dimensions) and nx and ny are the number of cells in each axis.
+"""
+function magnitude(arr::Array{AbstractFloat,3})
+    sz = arr.size
+    magarr = zeros(sz[2],sz[3])
+    for i in 1:sz[2]
+        for j in 1:sz[3]
+            sum = 0
+            for n in 1:sz[1]
+                sum = sum + arr[n,i,j]^2
+            end
+            magarr[i,j] = sqrt(sum)
         end
     end
     return magarr

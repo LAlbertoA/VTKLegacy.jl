@@ -3,4 +3,9 @@ using Documenter, VTKLegacy
 
 makedocs(
     modules = [VTKLegacy],
-    sitename="VTKLegacy.jl")
+    sitename="VTKLegacy.jl",
+    pages = [
+           "Home" => "index.md",
+           "Loading Files" => "loading.md",
+           "Plotting" => "plotting.md",
+           "API" => "reference.md"])

@@ -6,20 +6,20 @@ Object that contains all the information and datasets from a Legacy VTK file wit
 # Fields
 - `data::Array{Float64,4}`: 4-dimensional array of `Float64` that holds the datasets of the vtk file.
 - `title::String`: Title of the VTK file.
-- `nx::Int32`: Number of cells in the `x` direction.
-- `ny::Int32`: Number of cells in the `y` direction.
-- `nz::Int32`: Number of cells in the `z` direction.
-- `dx::Float64`: Cell size in the `x` direction.
-- `dy::Float64`: Cell size in the `y` direction.
-- `dz::Float64`: Cell size in the `z` direction.
+- `nx::Int32`: Number of points in the `x` direction.
+- `ny::Int32`: Number of points in the `y` direction.
+- `nz::Int32`: Number of points in the `z` direction.
+- `dx::Float64`: Distance between points in the `x` direction.
+- `dy::Float64`: Distance between points in the `y` direction.
+- `dz::Float64`: Distance between points in the `z` direction.
 - `x0::Float64`: Position of origin in the `x` direction.
 - `y0::Float64`: Position of origin in the `y` direction.
 - `z0::Float64`: Position of origin in the `z` direction.
-- `x::Vector{Float64}`: Cell positions in the `x` direction.
-- `y::Vector{Float64}`: Cell positions in the `y` direction.
-- `z::Vector{Float64}`: Cell positions in the `z` direction.
-- `dimensions::Vector{Int64}`: Number of cells in each dimension: `[nx,ny,nz]`.
-- `spacing::Vector{Float64}`: Cell size in each dimension: `[dx,dy,dz]`.
+- `x::Vector{Float64}`: Points positions in the `x` direction.
+- `y::Vector{Float64}`: Points positions in the `y` direction.
+- `z::Vector{Float64}`: Points positions in the `z` direction.
+- `dimensions::Vector{Int64}`: Number of points in each dimension: `[nx,ny,nz]`.
+- `spacing::Vector{Float64}`: Spacing size in each dimension: `[dx,dy,dz]`.
 - `origin::Vector{Float64}`: Origin of the mesh: `[x0,y0,z0]`.
 - `dataNames::Vector{String}`: Names of the datasets in the VTK file.
 - `dataAttributes::Vector{String}`: Attribute of each dataset in the VTK file.

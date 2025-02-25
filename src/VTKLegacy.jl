@@ -1,6 +1,5 @@
 module VTKLegacy
 
-    ## Usefull package to optimize some for-loops
     using CairoMakie                                           ## Visualization package for some functions
 
     import Base.getindex, Base.show                            ## importing Base functions to extend them

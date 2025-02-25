@@ -50,6 +50,7 @@ function loadSP(f::IOStream, m::StructuredPoints, title::String)
         end
     end
     ## Reading Datasets in VTK file to m.data
+    c = 0
     while ! eof(f)
         s = split(readline(f))
         if length(s) != 0 && s[1] == "SCALARS"
@@ -64,9 +65,10 @@ function loadSP(f::IOStream, m::StructuredPoints, title::String)
                 read!(f,temp)
                 m.data = cat(m.data,temp,dims=1)
             end
+            c += 1
             push!(names, s[2])
             push!(dtype, s[1])
-            m.dictionary[s[2]] = length(names)           
+            m.dictionary[s[2]] = c           
         elseif length(s) != 0 && s[1] == "VECTORS"
             if length(names) == 0
                 temp = Array{dt[s[3]],4}(undef,3,m.nx,m.ny,m.nz)
@@ -77,14 +79,13 @@ function loadSP(f::IOStream, m::StructuredPoints, title::String)
                 read!(f,temp)
                 m.data = cat(m.data,temp,dims=1)
             end
-            push!(names,s[2]*"x")
-            m.dictionary[s[2]*"x"] = length(names)
-            push!(names,s[2]*"y")
-            m.dictionary[s[2]*"y"] = length(names)
-            push!(names,s[2]*"z")
-            m.dictionary[s[2]*"z"] = length(names)
+            c += 3
+            push!(names,s[2])
+            m.dictionary[s[2]*"_x"] = c-2
+            m.dictionary[s[2]*"_y"] = c-1
+            m.dictionary[s[2]*"_z"] = c
             push!(dtype, s[1])
-            m.dictionary[s[2]] = length(names)-2:length(names)
+            m.dictionary[s[2]] = c-2:c
         end
     end
     ## Inverting endianess and defining other usefull fields
