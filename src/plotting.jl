@@ -19,7 +19,7 @@ function probe(fp::String, sv::Bool = false, fig = Figure(size = (1200,800)); im
     sl = 0
     for n in 1:length(m.dataAttributes)
         if axis_slice == "x"
-            if cell_slice == nothing
+            if isnothing(cell_slice)
                 sl = round(Int64,m.nx/2)
             else
                 sl = cell_slice
@@ -28,7 +28,7 @@ function probe(fp::String, sv::Bool = false, fig = Figure(size = (1200,800)); im
             ax2 = m.z
             arr = m.data[m.dictionary[m.dataNames[n]],sl,:,:]
         elseif axis_slice == "y"
-            if cell_slice == nothing
+            if isnothing(cell_slice)
                 sl = round(Int64,m.ny/2)
             else
                 sl = cell_slice
@@ -37,7 +37,7 @@ function probe(fp::String, sv::Bool = false, fig = Figure(size = (1200,800)); im
             ax2 = m.z
             arr = m.data[m.dictionary[m.dataNames[n]],:,sl,:]
         elseif axis_slice == "z"
-            if cell_slice == nothing
+            if isnothing(cell_slice)
                 sl = round(Int64,m.nz/2)
             else
                 sl = cell_slice
@@ -65,7 +65,7 @@ function probe(fp::String, sv::Bool = false, fig = Figure(size = (1200,800)); im
         return fig
     else
         ind = findlast('/', fp)
-        if ind == nothing
+        if isnothing(ind)
             save(image_name,fig)
         else
             save(fp[1:ind]*image_name,fig)

@@ -57,7 +57,7 @@ If `io` is unspecified, prints the values to the default output stream `stdout`.
 """
 function ranges(m::StructuredPoints,io::Union{IOStream,Nothing}=nothing)
     ndata = length(m.data[:,1,1,1])
-    if io == nothing
+    if isnothing(io)
         for i in 1:ndata
             @views mx = maximum(m.data[i,:,:,:])
             @views mn = minimum(m.data[i,:,:,:])
