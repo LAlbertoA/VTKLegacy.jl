@@ -91,3 +91,5 @@ Origin: [-1.0, -1.0, -1.0]
 Name of the data: ["Density", "Pressure", "Velocity"]
 Data type: ["SCALARS", "SCALARS", "VECTORS"]
 ```
+
+The latest VTKLegacy documentation can be found on [github pages](https://lalbertoa.github.io/VTKLegacy.jl)
