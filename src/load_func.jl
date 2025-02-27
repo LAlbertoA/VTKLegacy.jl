@@ -58,12 +58,12 @@ function loadSP(f::IOStream, m::StructuredPoints, title::String)
                 temp = Array{dt[s[3]],4}(undef,1,m.nx,m.ny,m.nz)
                 readline(f)
                 read!(f,temp)
-                m.data = temp
+                m.data = ntoh.(temp)
             else
                 temp = Array{dt[s[3]],4}(undef,1,m.nx,m.ny,m.nz)
                 readline(f)
                 read!(f,temp)
-                m.data = cat(m.data,temp,dims=1)
+                m.data = cat(m.data,ntoh.(temp),dims=1)
             end
             c += 1
             push!(names, s[2])
@@ -73,11 +73,11 @@ function loadSP(f::IOStream, m::StructuredPoints, title::String)
             if length(names) == 0
                 temp = Array{dt[s[3]],4}(undef,3,m.nx,m.ny,m.nz)
                 read!(f,temp)
-                m.data = temp
+                m.data = ntoh.(temp)
             else
                 temp = Array{dt[s[3]],4}(undef,3,m.nx,m.ny,m.nz)
                 read!(f,temp)
-                m.data = cat(m.data,temp,dims=1)
+                m.data = cat(m.data,ntoh.(temp),dims=1)
             end
             c += 3
             push!(names,s[2])
@@ -88,8 +88,8 @@ function loadSP(f::IOStream, m::StructuredPoints, title::String)
             m.dictionary[s[2]] = c-2:c
         end
     end
+    GC.gc()
     ## Inverting endianess and defining other usefull fields
-    m.data = ntoh.(m.data)
     m.dimensions = [m.nx,m.ny,m.nz]
     m.spacing = [m.dx,m.dy,m.dz]
     m.origin = [m.x0,m.y0,m.z0]

@@ -26,7 +26,7 @@ Object that contains all the information and datasets from a Legacy VTK file wit
 - `dictionary::Dict{String,Union{Int64,UnitRange{Int64}}}`: Dictionary with the `dataNames` as the `keys` and the indexes of `data` as the `values`. 
 """
 mutable struct StructuredPoints
-    data::Array{AbstractFloat,4}
+    data::Array{Float64,4}
     title::String
     nx::Int32
     ny::Int32
@@ -74,14 +74,14 @@ mutable struct UnstructuredGrid
     title::String
     npoints::Int32
     ncells::Int32
-    points::Array{AbstractFloat,2}
+    points::Array{Float64,2}
     cells::Vector{Int32}
     cellTypes::Vector{Int32}
-    cellData::Union{Array{AbstractFloat,2}, Nothing}
+    cellData::Union{Array{Float64,2}, Nothing}
     cellDataNames::Vector{String}
     cellDataAttributes::Vector{String}
     cellDict::Dict{String,IntOrRng}
-    pointData::Union{Array{AbstractFloat,2}, Nothing}
+    pointData::Union{Array{Float64,2}, Nothing}
     pointDataNames::Vector{String}
     pointDataAttributes::Vector{String}
     pointDict::Dict{String,IntOrRng}

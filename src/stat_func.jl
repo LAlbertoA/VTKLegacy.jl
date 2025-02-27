@@ -15,7 +15,7 @@ function integrate(m::StructuredPoints,var::Union{IntOrStr,Vector{IntOrStr}}=1)
     prs = []
     d = Dict(map(reverse,collect(m.dictionary)))
     if typeof(var) == Vector{IntOrStr} || typeof(var) == Vector{Int64} || typeof(var) == Vector{String}
-        for p in 1:length(var)
+        for p in eachindex(var)
             if typeof(var[p]) == Int64
                 push!(prs,var[p])
             else
