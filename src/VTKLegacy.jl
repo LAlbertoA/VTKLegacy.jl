@@ -41,8 +41,10 @@ module VTKLegacy
             println("Dimensions: $(m.dimensions)")
             println("Spacing: $(m.spacing)")
             println("Origin: $(m.origin)")
-            println("Name of the data: $(m.dataNames)")
-            println("Data type: $(m.dataAttributes)")
+            println("Name of cell datasets: $(m.cellDataNames)")
+            println("Cell data types: $(m.cellDataAttributes)")
+            println("Name of point datasets: $(m.pointDataNames)")
+            println("Point data types: $(m.pointDataAttributes)")
         elseif t == UnstructuredGrid
             println("Title: $(m.title)")
             println("Number of Cells: $(m.ncells)")

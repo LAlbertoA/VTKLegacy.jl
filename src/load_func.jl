@@ -21,6 +21,14 @@ function LoadVTK(fp::String)
                     m = UnstructuredGrid()
                     loadUSG(f, m, title)
                     return m
+                elseif sp[2] == "STRUCTURED_GRID"
+                    m = StructuredGrid()
+                    loadSG(f, m, title)
+                    return m
+                elseif sp[2] == "RECTILINEAR_GRID"
+                    m = RectilinearGrid()
+                    loadRG(f, m, title)
+                    return m
                 end
             end
         end
@@ -29,9 +37,8 @@ end
 ## Internal function. Only intended to be used inside LoadVTK function
 function loadSP(f::IOStream, m::StructuredPoints, title::String)
     m.title = title
-    names = String[]
-    dtype = String[]
-    m.dictionary = Dict{String,IntOrRng}()
+    m.cellDict = Dict{String,IntOrRng}()
+    m.pointDict = Dict{String,IntOrRng}()
     ## Reading mesh size, spacing and origin
     for i in 1:3
         s = split(readline(f))
@@ -50,51 +57,34 @@ function loadSP(f::IOStream, m::StructuredPoints, title::String)
         end
     end
     ## Reading Datasets in VTK file to m.data
-    c = 0
+    ccd = 0
+    cpd = 0
     while ! eof(f)
-        s = split(readline(f))
-        if length(s) != 0 && s[1] == "SCALARS"
-            if length(names) == 0
-                temp = Array{dt[s[3]],4}(undef,1,m.nx,m.ny,m.nz)
-                readline(f)
-                read!(f,temp)
-                m.data = ntoh.(temp)
-            else
-                temp = Array{dt[s[3]],4}(undef,1,m.nx,m.ny,m.nz)
-                readline(f)
-                read!(f,temp)
-                m.data = cat(m.data,ntoh.(temp),dims=1)
+        sp = split(readline(f))
+        if length(sp) != 0
+            if sp[1] == "CELL_DATA"
+                ccd = 1
+                read_cell_data(f, m)
+            elseif sp[1] == "POINT_DATA"
+                cpd = 1
+                read_point_data(f, m)
             end
-            c += 1
-            push!(names, s[2])
-            push!(dtype, s[1])
-            m.dictionary[s[2]] = c           
-        elseif length(s) != 0 && s[1] == "VECTORS"
-            if length(names) == 0
-                temp = Array{dt[s[3]],4}(undef,3,m.nx,m.ny,m.nz)
-                read!(f,temp)
-                m.data = ntoh.(temp)
-            else
-                temp = Array{dt[s[3]],4}(undef,3,m.nx,m.ny,m.nz)
-                read!(f,temp)
-                m.data = cat(m.data,ntoh.(temp),dims=1)
-            end
-            c += 3
-            push!(names,s[2])
-            m.dictionary[s[2]*"_x"] = c-2
-            m.dictionary[s[2]*"_y"] = c-1
-            m.dictionary[s[2]*"_z"] = c
-            push!(dtype, s[1])
-            m.dictionary[s[2]] = c-2:c
         end
     end
     GC.gc()
-    ## Inverting endianess and defining other usefull fields
+    if ccd != 1
+        m.cellData = nothing
+        m.cellDataNames = ["Nothing"]
+        m.cellDataAttributes = ["Nothing"]
+    end
+    if cpd != 1
+        m.pointData = nothing
+        m.pointDataNames = ["Nothing"]
+        m.pointDataAttributes = ["Nothing"]
+    end
     m.dimensions = [m.nx,m.ny,m.nz]
     m.spacing = [m.dx,m.dy,m.dz]
     m.origin = [m.x0,m.y0,m.z0]
-    m.dataNames = names
-    m.dataAttributes = dtype
     m.x = m.x0.+collect(1:m.nx).*m.dx.-m.dx/2
     m.y = m.y0.+collect(1:m.ny).*m.dy.-m.dy/2
     m.z = m.z0.+collect(1:m.nz).*m.dz.-m.dz/2
@@ -102,8 +92,119 @@ function loadSP(f::IOStream, m::StructuredPoints, title::String)
     println("Dimensions: $(m.dimensions)")
     println("Spacing: $(m.spacing)")
     println("Origin: $(m.origin)")
-    println("Name of the data: $(m.dataNames)")
-    println("Data type: $(m.dataAttributes)")
+    println("Name of cell datasets: $(m.cellDataNames)")
+    println("Cell data types: $(m.cellDataAttributes)")
+    println("Name of point datasets: $(m.pointDataNames)")
+    println("Point data types: $(m.pointDataAttributes)")
+end
+
+function loadSG(f::IOStream, m::StructuredGrid, title::String)
+    m.title = title
+    m.cellDict = Dict{String,IntOrRng}()
+    m.pointDict = Dict{String,IntOrRng}()
+    ## Reading mesh size, spacing and origin
+    for i in 1:2
+        s = split(readline(f))
+        if s[1] == "DIMENSIONS"
+            m.nx = parse(Int32,s[2])
+            m.ny = parse(Int32,s[3])
+            m.nz = parse(Int32,s[4])
+        elseif s[1] == "POINTS"
+            m.npoints = parse(Int32,s[2])
+            temp = Array{dt[sp[3]],4}(undef,3,m.nx,m.ny,m.nz)
+            read!(f,temp)
+            m.points = ntoh.(temp)
+        end
+    end
+    ## Reading Datasets in VTK file to m.data
+    ccd = 0
+    cpd = 0
+    while ! eof(f)
+        sp = split(readline(f))
+        if length(sp) != 0
+            if sp[1] == "CELL_DATA"
+                ccd = 1
+                read_cell_data(f, m)
+            elseif sp[1] == "POINT_DATA"
+                cpd = 1
+                read_point_data(f, m)
+            end
+        end
+    end
+    GC.gc()
+    if ccd != 1
+        m.cellData = nothing
+        m.cellDataNames = ["Nothing"]
+        m.cellDataAttributes = ["Nothing"]
+    end
+    if cpd != 1
+        m.pointData = nothing
+        m.pointDataNames = ["Nothing"]
+        m.pointDataAttributes = ["Nothing"]
+    end
+    m.dimensions = [m.nx,m.ny,m.nz]
+    println("Title: $(m.title)")
+    println("Dimensions: $(m.dimensions)")
+    println("Name of cell datasets: $(m.cellDataNames)")
+    println("Cell data types: $(m.cellDataAttributes)")
+    println("Name of point datasets: $(m.pointDataNames)")
+    println("Point data types: $(m.pointDataAttributes)")
+end
+
+function loadRG(f::IOStream, m::RectilinearGrid, title::String)
+    m.title = title
+    m.cellDict = Dict{String,IntOrRng}()
+    m.pointDict = Dict{String,IntOrRng}()
+    ## Reading mesh size, spacing and origin
+    s = split(readline(f))
+    m.nx = parse(Int32,s[2])
+    m.ny = parse(Int32,s[3])
+    m.nz = parse(Int32,s[4])
+    ## Reading Datasets in VTK file to m.data
+    ccd = 0
+    cpd = 0
+    while ! eof(f)
+        sp = split(readline(f))
+        if length(sp) != 0
+            if sp[1] == "X_COORDINATES"
+                temp = Vector{dt[sp[3]]}(undef,m.nx)
+                read!(f,temp)
+                m.xCoordinates = ntoh.(temp)
+            elseif sp[1] == "Y_COORDINATES"
+                temp = Vector{dt[sp[3]]}(undef,m.ny)
+                read!(f,temp)
+                m.yCoordinates = ntoh.(temp)
+            elseif sp[1] == "Z_COORDINATES"
+                temp = Vector{dt[sp[3]]}(undef,m.nz)
+                read!(f,temp)
+                m.zCoordinates = ntoh.(temp)
+            elseif sp[1] == "CELL_DATA"
+                ccd = 1
+                read_cell_data(f, m)
+            elseif sp[1] == "POINT_DATA"
+                cpd = 1
+                read_point_data(f, m)
+            end
+        end
+    end
+    GC.gc()
+    if ccd != 1
+        m.cellData = nothing
+        m.cellDataNames = ["Nothing"]
+        m.cellDataAttributes = ["Nothing"]
+    end
+    if cpd != 1
+        m.pointData = nothing
+        m.pointDataNames = ["Nothing"]
+        m.pointDataAttributes = ["Nothing"]
+    end
+    m.dimensions = [m.nx,m.ny,m.nz]
+    println("Title: $(m.title)")
+    println("Dimensions: $(m.dimensions)")
+    println("Name of cell datasets: $(m.cellDataNames)")
+    println("Cell data types: $(m.cellDataAttributes)")
+    println("Name of point datasets: $(m.pointDataNames)")
+    println("Point data types: $(m.pointDataAttributes)")
 end
 
 function loadUSG(f::IOStream, m::UnstructuredGrid, title::String)
@@ -119,14 +220,16 @@ function loadUSG(f::IOStream, m::UnstructuredGrid, title::String)
                 m.npoints = parse(Int32,sp[2])
                 temp = Array{dt[sp[3]],2}(undef,3,parse(Int32,sp[2]))
                 read!(f,temp)
-                m.points = temp
+                m.points = ntoh.(temp)
             elseif sp[1] == "CELLS"
                 m.ncells = parse(Int32, sp[2])
-                m.cells = Array{Int32,1}(undef,parse(Int32,sp[3]))
-                read!(f,m.cells)
+                temp = Array{Int32,1}(undef,parse(Int32,sp[3]))
+                read!(f,temp)
+                m.cells = ntoh.(temp)
             elseif sp[1] == "CELL_TYPES"
-                m.cellTypes = Array{Int32,1}(undef,parse(Int32,sp[2]))
-                read!(f,m.cellTypes)
+                temp = Array{Int32,1}(undef,parse(Int32,sp[2]))
+                read!(f,temp)
+                m.cellTypes = ntoh.(temp)
             elseif sp[1] == "CELL_DATA"
                 ccd = 1
                 read_cell_data(f, m)
@@ -136,19 +239,13 @@ function loadUSG(f::IOStream, m::UnstructuredGrid, title::String)
             end
         end
     end
-    m.points = ntoh.(m.points)
-    m.cells = ntoh.(m.cells)
-    m.cellTypes = ntoh.(m.cellTypes)
-    if ccd == 1
-        m.cellData = ntoh.(m.cellData)
-    else
+    GC.gc()
+    if ccd != 1
         m.cellData = nothing
         m.cellDataNames = ["Nothing"]
         m.cellDataAttributes = ["Nothing"]
     end
-    if cpd == 1
-        m.pointData = ntoh.(m.pointData)
-    else
+    if cpd != 1
         m.pointData = nothing
         m.pointDataNames = ["Nothing"]
         m.pointDataAttributes = ["Nothing"]
@@ -161,11 +258,104 @@ function loadUSG(f::IOStream, m::UnstructuredGrid, title::String)
     println("Name of point datasets: $(m.pointDataNames)")
     println("Point data types: $(m.pointDataAttributes)")
 end
-    
+## Reading point data and cell data from STRUCTURED_POINTS, STRUCTURED_GRID and RECTILINEAR_GRID
+function read_point_data(f::IOStream, m::Union{RectilinearGrid,StructuredPoints,StructuredGrid})
+    pointNames = String[]
+    pointTypes = String[]
+    sp = "READING POINT DATA"
+    c = 0
+    while ! eof(f) && sp[1] != "CELL_DATA"
+        sp = split(readline(f)*" .")
+        if length(sp) != 0 && sp[1] == "SCALARS"
+            if length(pointNames) == 0
+                temp = Array{dt[sp[3]],4}(undef,1,m.nx,m.ny,m.nz)
+                readline(f)
+                read!(f,temp)
+                m.pointData = ntoh.(temp)
+            else
+                temp = Array{dt[sp[3]],4}(undef,1,m.nx,m.ny,m.nz)
+                readline(f)
+                read!(f,temp)
+                m.pointData = cat(m.pointData,ntoh.(temp),dims=1)
+            end
+            c += 1
+            push!(pointNames,sp[2])
+            push!(pointTypes,sp[1])
+            m.pointDict[sp[2]] = c
+        elseif length(sp) != 0 && sp[1] == "VECTORS"
+            if length(pointNames) == 0
+                temp = Array{dt[sp[3]],4}(undef,3,m.nx,m.ny,m.nz)
+                read!(f,temp)
+                m.pointData = ntoh.(temp)
+            else
+                temp = Array{dt[sp[3]],4}(undef,3,m.nx,m.ny,m.nz)
+                read!(f,temp)
+                m.pointData = cat(m.pointData,ntoh.(temp),dims=1)
+            end
+            c += 3
+            push!(pointNames,sp[2])
+            m.pointDict[sp[2]*"_x"] = c-2
+            m.pointDict[sp[2]*"_y"] = c-1
+            m.pointDict[sp[2]*"_z"] = c
+            push!(pointTypes, sp[1])
+            m.pointDict[sp[2]] = c-2:c
+        end
+    end
+    m.pointDataNames = pointNames
+    m.pointDataAttributes = pointTypes
+end
+
+function read_cell_data(f::IOStream, m::Union{StructuredPoints,RectilinearGrid,StructuredGrid})
+    cellNames = String[]
+    cellTypes = String[]
+    sp = "READING CELL DATA"
+    c = 0
+    while ! eof(f) && sp[1] != "POINT_DATA"
+        sp = split(readline(f)*" .") 
+        if length(sp) != 0 && sp[1] == "SCALARS"
+            if length(cellNames) == 0
+                temp = Array{dt[sp[3]],4}(undef,1,m.nx-1,m.ny-1,m.nz-1)
+                readline(f)
+                read!(f,temp)
+                m.cellData = ntoh.(temp)
+            else
+                temp = Array{dt[sp[3]],4}(undef,1,m.nx-1,m.ny-1,m.nz-1)
+                readline(f)
+                read!(f,temp)
+                m.cellData = cat(m.cellData,ntoh.(temp),dims=1)
+            end
+            c += 1
+            push!(cellNames,sp[2])
+            push!(cellTypes,sp[1])
+            m.cellDict[sp[2]] = c
+        elseif length(sp) != 0 && sp[1] == "VECTORS"
+            if length(cellNames) == 0
+                temp = Array{dt[sp[3]],4}(undef,3,m.nx-1,m.ny-1,m.nz-1)
+                read!(f,temp)
+                m.cellData = ntoh.(temp)
+            else
+                temp = Array{dt[sp[3]],4}(undef,3,m.nx-1,m.ny-1,m.nz-1)
+                read!(f,temp)
+                m.cellData = cat(m.cellData,ntoh.(temp),dims=1)
+            end
+            c += 3
+            push!(cellNames,sp[2])
+            m.cellDict[sp[2]*"_x"] = c-2
+            m.cellDict[sp[2]*"_y"] = c-1
+            m.cellDict[sp[2]*"_z"] = c
+            push!(cellTypes, sp[1])
+            m.cellDict[sp[2]] = c-2:c
+        end
+    end
+    m.cellDataNames = cellNames
+    m.cellDataAttributes = cellTypes
+end
+## Reading point data and cell data from UNSTRUCTURED_GRID
 function read_cell_data(f::IOStream, m::UnstructuredGrid)
     cellNames = String[]
     cellTypes = String[]
     sp = "READING CELL DATA"
+    c = 0
     while ! eof(f) && sp[1] != "POINT_DATA"
         sp = split(readline(f)*" .") 
         if length(sp) != 0 && sp[1] == "SCALARS"
@@ -173,34 +363,34 @@ function read_cell_data(f::IOStream, m::UnstructuredGrid)
                 temp = Array{dt[sp[3]],2}(undef,1,m.ncells)
                 readline(f)
                 read!(f,temp)
-                m.cellData = temp
+                m.cellData = ntoh.(temp)
             else
                 temp = Array{dt[sp[3]],2}(undef,1,m.ncells)
                 readline(f)
                 read!(f,temp)
-                m.cellData = cat(m.cellData,temp,dims=1)
+                m.cellData = cat(m.cellData,ntoh.(temp),dims=1)
             end
+            c += 1
             push!(cellNames,sp[2])
             push!(cellTypes,sp[1])
-            m.cellDict[sp[2]] = length(cellNames)
+            m.cellDict[sp[2]] = c
         elseif length(sp) != 0 && sp[1] == "VECTORS"
             if length(cellNames) == 0
                 temp = Array{dt[sp[3]],2}(undef,3,m.ncells)
                 read!(f,temp)
-                m.cellData = temp
+                m.cellData = ntoh.(temp)
             else
                 temp = Array{dt[sp[3]],2}(undef,3,m.ncells)
                 read!(f,temp)
-                m.cellData = cat(m.cellData,temp,dims=1)
+                m.cellData = cat(m.cellData,ntoh.(temp),dims=1)
             end
-            push!(cellNames,sp[2]*"x")
-            m.cellDict[sp[2]*"x"] = length(cellNames)
-            push!(cellNames,sp[2]*"y")
-            m.cellDict[sp[2]*"y"] = length(cellNames)
-            push!(cellNames,sp[2]*"z")
-            m.cellDict[sp[2]*"z"] = length(cellNames)
+            c += 3
+            push!(cellNames,sp[2])
+            m.cellDict[sp[2]*"_x"] = c-2
+            m.cellDict[sp[2]*"_y"] = c-1
+            m.cellDict[sp[2]*"_z"] = c
             push!(cellTypes, sp[1])
-            m.cellDict[sp[2]] = length(cellNames)-2:length(cellNames)
+            m.cellDict[sp[2]] = c-2:c
         end
     end
     m.cellDataNames = cellNames
@@ -211,6 +401,7 @@ function read_point_data(f::IOStream, m::UnstructuredGrid)
     pointNames = String[]
     pointTypes = String[]
     sp = "READING POINT DATA"
+    c = 0
     while ! eof(f) && sp[1] != "CELL_DATA"
         sp = split(readline(f)*" .")
         if length(sp) != 0 && sp[1] == "SCALARS"
@@ -218,34 +409,36 @@ function read_point_data(f::IOStream, m::UnstructuredGrid)
                 temp = Array{dt[sp[3]],2}(undef,1,m.npoints)
                 readline(f)
                 read!(f,temp)
-                m.pointData = temp
+                m.pointData = ntoh.(temp)
             else
                 temp = Array{dt[sp[3]],2}(undef,1,m.npoints)
                 readline(f)
                 read!(f,temp)
-                m.pointData = cat(m.pointData,temp,dims=1)
+                m.pointData = cat(m.pointData,ntoh.(temp),dims=1)
             end
+            c += 1
             push!(pointNames,sp[2])
             push!(pointTypes,sp[1])
-            m.pointDict[sp[2]] = length(pointNames)
+            m.pointDict[sp[2]] = c
         elseif length(sp) != 0 && sp[1] == "VECTORS"
             if length(pointNames) == 0
                 temp = Array{dt[sp[3]],2}(undef,3,m.npoints)
                 read!(f,temp)
-                m.pointData = temp
+                m.pointData = ntoh.(temp)
             else
                 temp = Array{dt[sp[3]],2}(undef,3,m.npoints)
                 read!(f,temp)
-                m.pointData = cat(m.pointData,temp,dims=1)
+                m.pointData = cat(m.pointData,ntoh.(temp),dims=1)
             end
-            push!(pointNames,sp[2]*"x")
-            m.pointDict[sp[2]*"x"] = length(pointNames)
-            push!(pointNames,sp[2]*"y")
-            m.pointDict[sp[2]*"y"] = length(pointNames)
-            push!(pointNames,sp[2]*"z")
-            m.pointDict[sp[2]*"z"] = length(pointNames)
+            c += 3
+            push!(pointNames,sp[2])
+            m.pointDict[sp[2]*"_x"] = c-2
+            m.pointDict[sp[2]*"_y"] = c-1
+            m.pointDict[sp[2]*"_z"] = c
             push!(pointTypes, sp[1])
-            m.pointDict[sp[2]] = length(pointNames)-2:length(pointNames)
+            m.pointDict[sp[2]] = c-2:c
         end
     end
+    m.pointDataNames = pointNames
+    m.pointDataAttributes = pointTypes
 end

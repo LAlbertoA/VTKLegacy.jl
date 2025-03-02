@@ -99,7 +99,7 @@ end
 
 Returns the magnitude of a vector dataset of size (axis,nx,ny,nz) where `axis` is 3 (\"x\", \"y\" and \"z\" dimensions) and nx, ny and nz are the number of cells in each axis.
 """
-function magnitude(arr::Array{AbstractFloat,4})
+function magnitude(arr::Array{Float64,4})
     sz = arr.size
     magarr = zeros(sz[2],sz[3],sz[4])
     for i in 1:sz[2]
@@ -121,7 +121,7 @@ end
 
 Returns the magnitude of a vector dataset of size (axis,nx,ny) where `axis` is 3 (\"x\", \"y\" and \"z\" dimensions) and nx and ny are the number of cells in each axis.
 """
-function magnitude(arr::Array{AbstractFloat,3})
+function magnitude(arr::Array{Float64,3})
     sz = arr.size
     magarr = zeros(sz[2],sz[3])
     for i in 1:sz[2]

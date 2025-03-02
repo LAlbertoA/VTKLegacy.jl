@@ -26,7 +26,6 @@ Object that contains all the information and datasets from a Legacy VTK file wit
 - `dictionary::Dict{String,Union{Int64,UnitRange{Int64}}}`: Dictionary with the `dataNames` as the `keys` and the indexes of `data` as the `values`. 
 """
 mutable struct StructuredPoints
-    data::Array{Float64,4}
     title::String
     nx::Int32
     ny::Int32
@@ -43,9 +42,18 @@ mutable struct StructuredPoints
     dimensions::Vector{Int32}
     spacing::Vector{Float64}
     origin::Vector{Float64}
-    dataNames::Vector{String}
-    dataAttributes::Vector{String}
-    dictionary::Dict{String,IntOrRng}
+    cellData::Union{Array{Float64,4}, Nothing}
+    cellDataNames::Vector{String}
+    cellDataAttributes::Vector{String}
+    cellDict::Dict{String,IntOrRng}
+    pointData::Union{Array{Float64,4}, Nothing}
+    pointDataNames::Vector{String}
+    pointDataAttributes::Vector{String}
+    pointDict::Dict{String,IntOrRng}
+    #data::Array{Float64,4}
+    #dataNames::Vector{String}
+    #dataAttributes::Vector{String}
+    #dictionary::Dict{String,IntOrRng}
     StructuredPoints() = new()
 end
 
@@ -86,4 +94,43 @@ mutable struct UnstructuredGrid
     pointDataAttributes::Vector{String}
     pointDict::Dict{String,IntOrRng}
     UnstructuredGrid() = new()
+end
+
+mutable struct StructuredGrid
+    title::String
+    nx::Int32
+    ny::Int32
+    nz::Int32
+    dimensions::Vector{Int32}
+    npoints::Int32
+    points::Array{Float64,2}
+    cellData::Union{Array{Float64,2}, Nothing}
+    cellDataNames::Vector{String}
+    cellDataAttributes::Vector{String}
+    cellDict::Dict{String,IntOrRng}
+    pointData::Union{Array{Float64,2}, Nothing}
+    pointDataNames::Vector{String}
+    pointDataAttributes::Vector{String}
+    pointDict::Dict{String,IntOrRng}
+    StructuredGrid() = new()
+end
+
+mutable struct RectilinearGrid
+    title::String
+    nx::Int32
+    ny::Int32
+    nz::Int32
+    dimensions::Vector{Int32}
+    xCoordinates::Vector{Float64}
+    yCoordinates::Vector{Float64}
+    zCoordinates::Vector{Float64}
+    cellData::Union{Array{Float64,2}, Nothing}
+    cellDataNames::Vector{String}
+    cellDataAttributes::Vector{String}
+    cellDict::Dict{String,IntOrRng}
+    pointData::Union{Array{Float64,2}, Nothing}
+    pointDataNames::Vector{String}
+    pointDataAttributes::Vector{String}
+    pointDict::Dict{String,IntOrRng}
+    RectilinearGrid() = new()
 end
