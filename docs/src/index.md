@@ -57,7 +57,7 @@ julia> vtk.data[1,:,:,:]
  0.147353  0.158452  …  0.158379  0.147362
 ```
 
-The number of cells in each direction, size of each cell and origin of the grid can be obtained through the fields `vtk.dimensions`, `vtk.spacing` and `vtk.origin`:
+The number of points in each direction, distance between points and origin of the grid can be obtained through the fields `vtk.dimensions`, `vtk.spacing` and `vtk.origin`:
 
 ```julia
 julia> vtk.dimensions
@@ -89,3 +89,4 @@ Origin: [-1.0, -1.0, -1.0]
 Name of the data: ["Density", "Pressure", "Velocity"]
 Data type: ["SCALARS", "SCALARS", "VECTORS"]
 ```
+For more details about loading vtk files with different geometry/topology see [Loading VTK legacy files](@ref)
