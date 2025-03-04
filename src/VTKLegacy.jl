@@ -34,7 +34,7 @@ module VTKLegacy
 
     Print general information of the VTK file contained in the object `m`
     """
-    function show(m::Union{StructuredPoints,UnstructuredGrid})
+    function show(m::Union{StructuredPoints,UnstructuredGrid,RectilinearGrid,StructuredGrid})
         t = typeof(m)
         if t == StructuredPoints
             println("Title: $(m.title)")
@@ -51,6 +51,20 @@ module VTKLegacy
             println("Name of cell datasets: $(m.cellDataNames)")
             println("Cell data types: $(m.cellDataAttributes)")
             println("Number of Points: $(m.npoints)")
+            println("Name of point datasets: $(m.pointDataNames)")
+            println("Point data types: $(m.pointDataAttributes)")
+        elseif t == StructuredGrid
+            println("Title: $(m.title)")
+            println("Dimensions: $(m.dimensions)")
+            println("Name of cell datasets: $(m.cellDataNames)")
+            println("Cell data types: $(m.cellDataAttributes)")
+            println("Name of point datasets: $(m.pointDataNames)")
+            println("Point data types: $(m.pointDataAttributes)")
+        elseif t == RectilinearGrid
+            println("Title: $(m.title)")
+            println("Dimensions: $(m.dimensions)")
+            println("Name of cell datasets: $(m.cellDataNames)")
+            println("Cell data types: $(m.cellDataAttributes)")
             println("Name of point datasets: $(m.pointDataNames)")
             println("Point data types: $(m.pointDataAttributes)")
         end

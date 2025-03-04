@@ -1,3 +1,4 @@
+abstract type VTKDataSet end
 """
     StructuredPoints
 
@@ -25,7 +26,7 @@ Object that contains all the information and datasets from a Legacy VTK file wit
 - `dataAttributes::Vector{String}`: Attribute of each dataset in the VTK file.
 - `dictionary::Dict{String,Union{Int64,UnitRange{Int64}}}`: Dictionary with the `dataNames` as the `keys` and the indexes of `data` as the `values`. 
 """
-mutable struct StructuredPoints
+mutable struct StructuredPoints <: VTKDataSet
     title::String
     nx::Int32
     ny::Int32
@@ -78,7 +79,7 @@ Object that contains all the information and datasets from a Legacy VTK file wit
 - `pointDataAttributes::Vector{String}`: Attribute of each dataset in the POINT_DATA section.
 - `pointDict::Dict{String,IntOrRng}`: Dictionary with the `pointDataNames` as the `keys` and the indexes of `pointData` as the `values`.
 """
-mutable struct UnstructuredGrid
+mutable struct UnstructuredGrid <: VTKDataSet
     title::String
     npoints::Int32
     ncells::Int32
@@ -96,7 +97,7 @@ mutable struct UnstructuredGrid
     UnstructuredGrid() = new()
 end
 
-mutable struct StructuredGrid
+mutable struct StructuredGrid <: VTKDataSet
     title::String
     nx::Int32
     ny::Int32
@@ -115,7 +116,7 @@ mutable struct StructuredGrid
     StructuredGrid() = new()
 end
 
-mutable struct RectilinearGrid
+mutable struct RectilinearGrid <: VTKDataSet
     title::String
     nx::Int32
     ny::Int32
