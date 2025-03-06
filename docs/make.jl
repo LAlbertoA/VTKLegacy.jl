@@ -7,7 +7,7 @@ makedocs(
     pages = [
            "Home" => "index.md",
            "Loading Files" => "loading.md",
-           "Plotting" => "plotting.md",
+           "Writing Files" => "writing.md",
            "API" => "reference.md"])
 
 deploydocs(

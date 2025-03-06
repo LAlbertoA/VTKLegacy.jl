@@ -1,7 +1,7 @@
 # Loading VTK legacy files
 
 The motivation behind VTKLegacy is the ability to extract the contents of a VTK file written in legacy format and load the data to an object deppending of the geometry/topology of the datasets.
-The data must be written in binary and, currently, only "STRUCTURED\_POINTS" and "UNSTRUCTURED\_GRID" with "POINT\_DATA" and "CELL\_DATA" are supported.
+The data must be written in binary and, currently, only "STRUCTURED\_POINTS", "STRUCTURED\_GRID", "RECTILINEAR\_GRID" and "UNSTRUCTURED\_GRID" with "POINT\_DATA" and "CELL\_DATA" are supported.
 
 To load the content of a VTK file, use the function `LoadVTK`:
 
@@ -9,9 +9,8 @@ To load the content of a VTK file, use the function `LoadVTK`:
 julia> vtk = LoadVTK("path/to/file.vtk");
 ```
 
-This will load the VTK file in a custom object deppending if the VTK file has "STRUCTURED\_POINTS" or "UNSTRUCTURED\_GRID". When working with files with "STRUCTURED\_POINTS", the load function will create
-a `StructuredPoints` object that contains all the information in the file in it's fields and print to `stdout` a summary of the data. Since this type of topology only has point data, the `vtk.data`
-field will contain all of the datasets in the file. Accesing `m.data` will return an array with shape `(ndata,nx,ny,nz)` where `ndata = SCALARS+3*VECTORS` 
+This will load the VTK file in a custom object deppending on the VTK file geometry/topology. When working with files with "STRUCTURED\_POINTS", the load function will create
+a `StructuredPoints` object that contains all the information in the file in it's fields and print to `stdout` a summary of the data, the `vtk.data` field will contain all of the datasets in the file. Accesing `m.data` will return an array with shape `(ndata,nx,ny,nz)` where `ndata = SCALARS+3*VECTORS` 
 (the number of SCALARS datasets plus 3 times the number of VECTORS datasets, one for each component of the vector) and nx, ny and nz the number of points in each axis. Using the example file `StructuredPointsExample.vtk` we get:
 
 ```julia

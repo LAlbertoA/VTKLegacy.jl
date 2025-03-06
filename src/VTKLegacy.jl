@@ -1,14 +1,13 @@
 module VTKLegacy
 
-    using CairoMakie                                           ## Visualization package for some functions
-
     import Base.getindex, Base.show                            ## importing Base functions to extend them
 
     export StructuredPoints, LoadVTK, integrate, ranges
-    export magnitude, probe, UnstructuredGrid                  ## Exported names from this package
+    export magnitude, UnstructuredGrid, RectilinearGrid        ## Exported names from this package
+    export StructuredGrid, VTKDataSet, WriteVTK
 
     const IntOrStr = Union{Int64,String}                       ## Custom Union Types
-    const IntOrRng = Union{Int64,UnitRange{Int64}}             ## "
+    const IntOrRng = Union{Int64,UnitRange{Int64}}
 
     dt = Dict{String,DataType}("float"=>Float32,
         "double"=>Float64,"int"=>Int16,"short"=>Int16,         ## Data types supported by VTK files
@@ -17,7 +16,8 @@ module VTKLegacy
     include("structs.jl")
     include("stat_func.jl")
     include("load_func.jl")
-    include("plotting.jl")
+    #include("plotting.jl")
+    include("write_func.jl")
 
     """
         getindex(m::StructuredPoints, name::String)
@@ -34,7 +34,7 @@ module VTKLegacy
 
     Print general information of the VTK file contained in the object `m`
     """
-    function show(m::Union{StructuredPoints,UnstructuredGrid,RectilinearGrid,StructuredGrid})
+    function show(m::VTKDataSet)
         t = typeof(m)
         if t == StructuredPoints
             println("Title: $(m.title)")
