@@ -10,22 +10,23 @@ julia> vtk = LoadVTK("path/to/file.vtk");
 ```
 
 This will load the VTK file in a custom object deppending on the VTK file geometry/topology. When working with files with "STRUCTURED\_POINTS", the load function will create
-a `StructuredPoints` object that contains all the information in the file in it's fields and print to `stdout` a summary of the data, the `vtk.data` field will contain all of the datasets in the file. Accesing `m.data` will return an array with shape `(ndata,nx,ny,nz)` where `ndata = SCALARS+3*VECTORS` 
-(the number of SCALARS datasets plus 3 times the number of VECTORS datasets, one for each component of the vector) and nx, ny and nz the number of points in each axis. Using the example file `StructuredPointsExample.vtk` we get:
+a `StructuredPoints` object that contains all the information in the file in it's fields and print to `stdout` a summary of the data. The `vtk.pointData` and `vtk.cellData` fields will contain all of the datasets in the file. Accesing `m.pointData` (or `m.cellData`) will return an array with shape `(ndata,nx,ny,nz)` where `ndata = SCALARS+3*VECTORS` (the number of SCALARS datasets plus 3 times the number of VECTORS datasets, one for each component of the vector) and nx, ny and nz the number of points in each axis. Using the example file `StructuredPointsExample.vtk` we get:
 
 ```julia
-julia> vtk = LoadVTK("/home/luis/.julia/dev/VTKLegacy/VTK_examples/StructuredPointsExample.vtk");
+julia> vtk = LoadVTK("VTK_examples/StructuredPointsExample.vtk");
 Title: output from Diable
 Dimensions: Int32[50, 50, 50]
 Spacing: [0.04, 0.04, 0.04]
 Origin: [-1.0, -1.0, -1.0]
-Name of the data: ["Density", "Pressure", "Velocity"]
-Data type: ["SCALARS", "SCALARS", "VECTORS"]
+Name of cell datasets: ["Nothing"]
+Cell data types: ["Nothing"]
+Name of point datasets: ["Density", "Pressure", "Velocity"]
+Point data types: ["SCALARS", "SCALARS", "VECTORS"]
 
-julia> vtk.data.size
+julia> vtk.pointData.size
 (5, 50, 50, 50)
 
-julia> vtk.dataAttributes
+julia> vtk.pointDataAttributes
 3-element Vector{String}:
  "SCALARS"
  "SCALARS"
@@ -38,13 +39,13 @@ julia> vtk.dimensions
  50
 ```
 
-To retrieve a dataset from `m.data` you can index like with any array or with the dataset name directly from the `StructuredPoints` object:
+To retrieve a dataset from `m.pointData` you can index like with any array or with the dataset name directly from the `StructuredPoints` object:
 
 ```julia
-julia> vtk.data[1,:,:,:] == vtk["Density"]
+julia> vtk.pointData[1,:,:,:] == vtk["Density"]
 true
 ```
-And to print the general info showed when loading the file:
+You can index by dataset name any of the 4 `VTKDataSet` objects. To print the general info showed when loading the file:
 
 ```julia
 julia> show(vtk)
@@ -52,11 +53,13 @@ Title: output from Diable
 Dimensions: Int32[50, 50, 50]
 Spacing: [0.04, 0.04, 0.04]
 Origin: [-1.0, -1.0, -1.0]
-Name of the data: ["Density", "Pressure", "Velocity"]
-Data type: ["SCALARS", "SCALARS", "VECTORS"]
+Name of cell datasets: ["Nothing"]
+Cell data types: ["Nothing"]
+Name of point datasets: ["Density", "Pressure", "Velocity"]
+Point data types: ["SCALARS", "SCALARS", "VECTORS"]
 ```
 
-If the file(s) topology is "UNSTRUCTURED\_GRID", the load function will create an `UnstructuredGrid` object. Since this type of file can contain any type of [dataset attribute format](https://docs.vtk.org/en/latest/design_documents/VTKFileFormats.html) without any type of regular structure data will be stored in a field for each dataset attribute format (currently only supporting "POINT\_DATA" and "CELL\_DATA"). For example loading the file `UnstructuredGridExample.vtk` we get:
+If the file(s) topology is "UNSTRUCTURED\_GRID", the load function will create an `UnstructuredGrid` object. Since this type of file can contain any type of [dataset attribute format](https://docs.vtk.org/en/latest/design_documents/VTKFileFormats.html) without any type of regular structure, data will be stored in a field for each dataset attribute format (currently only supporting "POINT\_DATA" and "CELL\_DATA"). For example loading the file `UnstructuredGridExample.vtk` we get:
 
 ```julia
 julia> vtk = LoadVTK("VTK_examples/UnstructuredGridExample.vtk");

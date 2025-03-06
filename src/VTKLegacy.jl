@@ -20,17 +20,36 @@ module VTKLegacy
     include("write_func.jl")
 
     """
-        getindex(m::StructuredPoints, name::String)
+        getindex(m::VTKDataSet, name::String)
 
-    Retrieve the array stored in the `m.data` field with name `name`. The `name` should be an element of `m.dataNames`. 
-    The syntax `m["dataname"]` is converted by the compiler to `getindex(m,"dataname")`.
+    Retrieve the array stored in the `m.pointData` or `m.cellData` field with name `name`. The 
+    `name` should be an element of `m.pointDataNames` or `m.cellDataNames`, if not throws an error. If the 
+    `name` is an element of both throws an error. The syntax `m["name"]` is converted by the compiler 
+    to `getindex(m,"name")`.
     """
-    function getindex(m::StructuredPoints, name::String)
-        return m.data[m.dictionary[name],:,:,:]
+    function getindex(m::VTKDataSet, name::String)
+        if name in m.pointDataNames && name in m.cellDataNames
+            error("Point dataset and cell dataset with same name. Use index number in pointData or 
+            cellData field to retrieve specific array.")
+        elseif name in m.pointDataNames
+            if typeof(m) == UnstructuredGrid
+                return m.pointData[m.pointDict[name],:]
+            else
+                return m.pointData[m.pointDict[name],:,:,:]
+            end
+        elseif name in m.cellDataNames
+            if typeof(m) == UnstructuredGrid
+                return m.cellData[m.cellDict[name],:]
+            else
+                return m.cellData[m.cellDict[name],:,:,:]
+            end
+        else
+            error("Dataset with name $(name) not found in $(typeof(m)) object")
+        end
     end
 
     """
-        show(m::Union{StructuredPoints,UnstructuredGrid})
+        show(m::VTKDataSet)
 
     Print general information of the VTK file contained in the object `m`
     """

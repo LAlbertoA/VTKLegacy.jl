@@ -1,5 +1,5 @@
 """
-    WriteVTK(filename::Stirng, m::VTKDataSet)
+    WriteVTK(filename::String, m::VTKDataSet)
 Write a VTK file with with name `filename` with the contents of `m`. The file will have 
 geometry/topology according with `typeof(m)`.
 """
@@ -29,7 +29,7 @@ function writeSP(f::IOStream,m::StructuredPoints)
     write(f,"ORIGIN "*string(m.x0)*" "*string(m.y0)*" "*string(m.z0)*"\n")
     write(f,"SPACING "*string(m.dx)*" "*string(m.dy)*" "*string(m.dz)*"\n")
     # Writing point data
-    if m.pointData != nothing
+    if !isnothing(m.pointData)
         write(f, "POINT_DATA "*string(m.nx*m.ny*m.nz)*"\n")
         for i in eachindex(m.pointDataNames)
             if m.pointDataAttributes[i] == "SCALARS"
@@ -45,7 +45,7 @@ function writeSP(f::IOStream,m::StructuredPoints)
         end
     end
     # Writing cell data
-    if m.cellData != nothing
+    if !isnothing(m.cellData)
         write(f, "CELL_DATA "*string((m.nx-1)*(m.ny-1)*(m.nz-1))*"\n")
         for i in eachindex(m.cellDataNames)
             if m.cellDataAttributes[i] == "SCALARS"
@@ -68,7 +68,7 @@ function writeSG(f::IOStream,m::StructuredGrid)
     write(f, hton.(m.points))
     write(f, "\n")
     # Writing point data
-    if m.pointData != nothing
+    if !isnothing(m.pointData)
         write(f, "POINT_DATA "*string(m.nx*m.ny*m.nz)*"\n")
         for i in eachindex(m.pointDataNames)
             if m.pointDataAttributes[i] == "SCALARS"
@@ -84,7 +84,7 @@ function writeSG(f::IOStream,m::StructuredGrid)
         end
     end
     # Writing cell data
-    if m.cellData != nothing
+    if !isnothing(m.cellData)
         write(f, "CELL_DATA "*string((m.nx-1)*(m.ny-1)*(m.nz-1))*"\n")
         for i in eachindex(m.cellDataNames)
             if m.cellDataAttributes[i] == "SCALARS"
@@ -113,7 +113,7 @@ function writeRG(f::IOStream,m::RectilinearGrid)
     write(f, hton.(m.zCoordinates))
     write(f, "\n")
     # Writing point data
-    if m.pointData != nothing
+    if !isnothing(m.pointData)
         write(f, "POINT_DATA "*string(m.nx*m.ny*m.nz)*"\n")
         for i in eachindex(m.pointDataNames)
             if m.pointDataAttributes[i] == "SCALARS"
@@ -129,7 +129,7 @@ function writeRG(f::IOStream,m::RectilinearGrid)
         end
     end
     # Writing cell data
-    if m.cellData != nothing
+    if !isnothing(m.cellData)
         write(f, "CELL_DATA "*string((m.nx-1)*(m.ny-1)*(m.nz-1))*"\n")
         for i in eachindex(m.cellDataNames)
             if m.cellDataAttributes[i] == "SCALARS"
@@ -157,7 +157,7 @@ function writeUSG(f::IOStream,m::UnstructuredGrid)
     write(f, hton.(m.cellTypes))
     write(f, "\n")
     # Writing point data
-    if m.pointData != nothing
+    if !isnothing(m.pointData)
         write(f, "POINT_DATA "*string(m.nx*m.ny*m.nz)*"\n")
         for i in eachindex(m.pointDataNames)
             if m.pointDataAttributes[i] == "SCALARS"
@@ -173,7 +173,7 @@ function writeUSG(f::IOStream,m::UnstructuredGrid)
         end
     end
     # Writing cell data
-    if m.cellData != nothing
+    if !isnothing(m.cellData)
         write(f, "CELL_DATA "*string((m.nx-1)*(m.ny-1)*(m.nz-1))*"\n")
         for i in eachindex(m.cellDataNames)
             if m.cellDataAttributes[i] == "SCALARS"

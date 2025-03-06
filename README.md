@@ -2,10 +2,10 @@
 
 [![Build Status](https://github.com/LAlbertoA/VTKLegacy.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/LAlbertoA/VTKLegacy.jl/actions/workflows/CI.yml?query=branch%3Amain)
 
-VTKLegacy is a Julia package that allows you to read in data from VTK files writen in Legacy format. To read data from VTK XML files [ReadVTK.jl](https://github.com/JuliaVTK/ReadVTK.jl) is the way to go.
+VTKLegacy is a Julia package that allows you to read and write data from and to VTK Legacy format files. To read data from VTK XML files, [ReadVTK.jl](https://github.com/JuliaVTK/ReadVTK.jl) is the way to go.
 
 *Note: VTKLegacy is under development and originally designed to read VTK files produced by [Walicxe3D](https://github.com/meithan/walicxe3d), [Guacho](https://github.com/esquivas/guacho) and [Tlaloque]().
-Currently only supporting reading data stored as cells and points, but community contributions to improve this package are welcome!*
+Currently only supporting reading and writing data stored as cells and points, but community contributions to improve this package are welcome!*
 
 ## Usage
 
@@ -18,8 +18,7 @@ Then load a VTK file by using the `LoadVTK` function
 ```julia
 vtk = LoadVTK("path/to/file.vtk")
 ```
-This will create a `StructuredPoints` or `UnstructuredGrid` object that contains all the information and datasets of the file.
-Also it will print general information of the file to the default output stream:
+This will create an object according to the topology/geometry of the file read. This object contains all the information and datasets of the file. Also it will print general information of the file to the default output stream:
 
 ```julia
 julia> vtk = LoadVTK("VTK_examples/StructuredPointsExample.vtk");
@@ -27,14 +26,16 @@ Title: output from Diable
 Dimensions: Int32[50, 50, 50]
 Spacing: [0.04, 0.04, 0.04]
 Origin: [-1.0, -1.0, -1.0]
-Name of the data: ["Density", "Pressure", "Velocity"]
-Data type: ["SCALARS", "SCALARS", "VECTORS"]
+Name of cell datasets: ["Nothing"]
+Cell data types: ["Nothing"]
+Name of point datasets: ["Density", "Pressure", "Velocity"]
+Point data types: ["SCALARS", "SCALARS", "VECTORS"]
 ```
 
-To acces the data from a vtk file with STRUCTURED_POINTS, you can index the `data` field of the `StructuredPoints` object with the index number or the data name of the dataset you want:
+To acces the data from a vtk file with STRUCTURED_POINTS, you can index the `cellData` or `pointData` fields of the `StructuredPoints` object with the index number or the data name of the dataset you want:
 
 ```julia
-julia> vtk.data[1,:,:,:]
+julia> vtk.pointData[1,:,:,:]
 50×50×50 Array{AbstractFloat, 3}:
 [:, :, 1] =
  0.147356  0.158636  …  0.158553  0.147354
@@ -80,7 +81,7 @@ julia> vtk.origin
  -1.0
  -1.0
 ```
-The same information shown when loading the file can be shown again using the `show` function by passing the `StructuredPoints` or `UnstructuredGrid` object:
+The same information shown when loading the file can be shown again using the `show` function by passing the vtk object:
 
 ```julia
 julia> show(vtk)
@@ -88,8 +89,10 @@ Title: output from Diable
 Dimensions: Int32[50, 50, 50]
 Spacing: [0.04, 0.04, 0.04]
 Origin: [-1.0, -1.0, -1.0]
-Name of the data: ["Density", "Pressure", "Velocity"]
-Data type: ["SCALARS", "SCALARS", "VECTORS"]
+Name of cell datasets: ["Nothing"]
+Cell data types: ["Nothing"]
+Name of point datasets: ["Density", "Pressure", "Velocity"]
+Point data types: ["SCALARS", "SCALARS", "VECTORS"]
 ```
 
 The latest VTKLegacy documentation can be found on [github pages](https://lalbertoa.github.io/VTKLegacy.jl)
