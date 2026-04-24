@@ -1,4 +1,4 @@
-push!(LOAD_PATH,"/home/luis/.julia/dev/VTKLegacy/src/")
+#push!(LOAD_PATH,"/home/luis-arcos/.julia/dev/VTKLegacy/src/")
 using Documenter, VTKLegacy
 
 makedocs(
