@@ -30,9 +30,9 @@ Object that contains all the information and datasets from a Legacy VTK file wit
 - `cellDataAttributes::Vector{String}`: Attribute of each dataset in the CELL_DATA section.
 - `cellDict::Dict{String,IntOrRng}`: Dictionary with the `cellDataNames` as the `keys` and the indexes of `cellData` as the `values`.
 - `pointData::Union{Array{AbstractFloat,4}, Nothing}`: Array containing each dataset in the POINT_DATA section.
-- `pointDataNames::Vector{String}`: Names of the datasets in the VTK file.
-- `pointDataAttributes::Vector{String}`: Attribute of each dataset in the VTK file.
-- `pointDict::Dict{String,IntOrRng}`: Dictionary with the `dataNames` as the `keys` and the indexes of `data` as the `values`. 
+- `pointDataNames::Vector{String}`: Names of each dataset in the POINT_DATA section.
+- `pointDataAttributes::Vector{String}`: Attribute of each dataset in the POINT_DATA section.
+- `pointDict::Dict{String,IntOrRng}`: Dictionary with the `pointDataNames` as the `keys` and the indexes of `pointData` as the `values`. 
 """
 mutable struct StructuredPoints <: VTKDataSet
     title::String
@@ -119,9 +119,9 @@ Object that contains all the information and datasets from a Legacy VTK file wit
 - `cellDataAttributes::Vector{String}`: Attribute of each dataset in the CELL_DATA section.
 - `cellDict::Dict{String,IntOrRng}`: Dictionary with the `cellDataNames` as the `keys` and the indexes of `cellData` as the `values`.
 - `pointData::Union{Array{AbstractFloat,4}, Nothing}`: Array containing each dataset in the POINT_DATA section.
-- `pointDataNames::Vector{String}`: Names of the datasets in the VTK file.
-- `pointDataAttributes::Vector{String}`: Attribute of each dataset in the VTK file.
-- `pointDict::Dict{String,IntOrRng}`: Dictionary with the `dataNames` as the `keys` and the indexes of `data` as the `values`. 
+- `pointDataNames::Vector{String}`: Name of each dataset in the POINT_DATA section.
+- `pointDataAttributes::Vector{String}`: Attribute of each dataset in the POINT_DATA section.
+- `pointDict::Dict{String,IntOrRng}`: Dictionary with the `pointDataNames` as the `keys` and the indexes of `pointData` as the `values`. 
 """
 mutable struct StructuredGrid <: VTKDataSet
     title::String
@@ -161,9 +161,9 @@ Object that contains all the information and datasets from a Legacy VTK file wit
 - `cellDataAttributes::Vector{String}`: Attribute of each dataset in the CELL_DATA section.
 - `cellDict::Dict{String,IntOrRng}`: Dictionary with the `cellDataNames` as the `keys` and the indexes of `cellData` as the `values`.
 - `pointData::Union{Array{AbstractFloat,4}, Nothing}`: Array containing each dataset in the POINT_DATA section.
-- `pointDataNames::Vector{String}`: Names of the datasets in the VTK file.
-- `pointDataAttributes::Vector{String}`: Attribute of each dataset in the VTK file.
-- `pointDict::Dict{String,IntOrRng}`: Dictionary with the `dataNames` as the `keys` and the indexes of `data` as the `values`. 
+- `pointDataNames::Vector{String}`: Name of each dataset in the POINT_DATA section.
+- `pointDataAttributes::Vector{String}`: Attribute of each dataset in the POINT_DATA section.
+- `pointDict::Dict{String,IntOrRng}`: Dictionary with the `pointDataNames` as the `keys` and the indexes of `pointData` as the `values`. 
 """
 mutable struct RectilinearGrid <: VTKDataSet
     title::String
